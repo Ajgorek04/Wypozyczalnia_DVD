@@ -1,6 +1,11 @@
 CREATE DATABASE WypozyczalniaPlytDVD;
 USE WypozyczalniaPlytDVD;
 
+CREATE TABLE IF NOT EXISTS Uzytkownik (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(64) NOT NULL
+);
 
 
 CREATE TABLE Klient (
