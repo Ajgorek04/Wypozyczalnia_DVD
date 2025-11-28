@@ -1,4 +1,3 @@
-// java
 package server;
 
 import java.io.*;
@@ -63,7 +62,6 @@ public class ServerApp {
                 }
 
             } else if (msg.startsWith("RENT;")) {
-                // RENT;filmId;userId
                 String[] parts = msg.split(";", 3);
                 if (parts.length == 3) {
                     int filmId = Integer.parseInt(parts[1]);
@@ -72,16 +70,15 @@ public class ServerApp {
                 } else out.println("RENT_FAIL");
 
             } else if (msg.startsWith("RETURN;")) {
-                // RETURN;filmId;userId
                 String[] parts = msg.split(";", 3);
                 if (parts.length == 3) {
                     int filmId = Integer.parseInt(parts[1]);
                     int userId = Integer.parseInt(parts[2]);
-                    out.println(txRepo.returnFilm(userId, filmId) ? "RETURN_OK" : "RETURN_FAIL");
+                    String res = txRepo.returnFilmWithCheck(userId, filmId);
+                    out.println(res);
                 } else out.println("RETURN_FAIL");
 
             } else if (msg.startsWith("MY_RENTS;")) {
-                // MY_RENTS;userId
                 String[] parts = msg.split(";", 2);
                 if (parts.length == 2) {
                     int userId = Integer.parseInt(parts[1]);
@@ -91,7 +88,6 @@ public class ServerApp {
                 } else out.println("END");
 
             } else if (msg.startsWith("MY_TRANS;")) {
-                // MY_TRANS;userId
                 String[] parts = msg.split(";", 2);
                 if (parts.length == 2) {
                     int userId = Integer.parseInt(parts[1]);
@@ -101,7 +97,6 @@ public class ServerApp {
                 } else out.println("END");
 
             } else if (msg.startsWith("PAY;")) {
-                // PAY;oplataId;amount;userId
                 String[] parts = msg.split(";", 4);
                 if (parts.length == 4) {
                     int oplataId = Integer.parseInt(parts[1]);
