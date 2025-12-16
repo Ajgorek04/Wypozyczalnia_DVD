@@ -1,3 +1,4 @@
+// java
 package server;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ public class Database {
         try {
             return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Błąd połączenia z bazą danych: " + e.getMessage());
             return null;
         }
     }
