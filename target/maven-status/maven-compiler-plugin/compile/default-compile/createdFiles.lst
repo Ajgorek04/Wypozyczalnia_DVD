@@ -1,0 +1,8 @@
+client\MainClient$1.class
+client\ClientApp.class
+server\FilmRepository.class
+server\UserRepository.class
+server\ServerApp.class
+client\MainClient.class
+server\TransactionRepository.class
+server\Database.class
