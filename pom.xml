@@ -30,6 +30,8 @@
             <scope>test</scope>
         </dependency>
 
+
+
         <!-- poprawiona, dostępna wersja MySQL connector -->
         <dependency>
             <groupId>mysql</groupId>
