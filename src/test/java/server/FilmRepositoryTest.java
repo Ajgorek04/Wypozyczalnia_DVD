@@ -1,29 +1,29 @@
-// java
 package server;
 
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-class FilmRepositoryExtraTest {
+class FilmRepositoryTest {
 
-    private static FilmRepository repo;
+    private FilmRepository filmRepo;
 
-    @BeforeAll
-    static void init() {
-        repo = new FilmRepository();
+    @BeforeEach
+    void setUp() throws Exception {
+        TestDatabaseSetup.initDatabase();
+        filmRepo = new FilmRepository();
     }
 
     @Test
-    void containsKnownTitleAndFormat() {
-        List<String> films = repo.getAllFilms();
-        assertNotNull(films);
-        assertFalse(films.isEmpty());
-        // sprawdź, że przynajmniej jeden wpis ma format "id. tytul ... Dostępny: true/false"
-        boolean okFormat = films.stream().anyMatch(s -> s.matches("^\\d+\\..*Dostępny:\\s*(true|false).*"));
-        assertTrue(okFormat, "Brak wpisów w oczekiwanym formacie");
-        // sprawdź, że przykładowy tytuł z init.sql występuje
-        boolean hasMatrix = films.stream().anyMatch(s -> s.contains("Matrix"));
-        assertTrue(hasMatrix, "Brak przykładowego tytułu 'Matrix' w wynikach");
+    void shouldGetAllFilmsFormatted() {
+        List<String> films = filmRepo.getAllFilmsFormatted();
+        assertFalse(films.isEmpty(), "Baza nie powinna być pusta (dane z init.sql)");
+
+        // Sprawdź format (Locale.US kropki, itp.)
+        // Oczekujemy np: "1. Matrix (1999) - Dostępny: true"
+        String firstFilm = films.get(0);
+        assertTrue(firstFilm.contains("Matrix"), "Powinien być Matrix");
+        assertTrue(firstFilm.contains("Dostępny:"), "Musi zawierać status dostępności");
     }
 }

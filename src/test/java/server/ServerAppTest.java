@@ -1,56 +1,97 @@
-// java
-// Plik: `src/test/java/server/ServerAppTest.java`
-// Zmiana: ServerSocket(0) i użycie rzeczywistego portu klienta
 package server;
 
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.lang.reflect.Method;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ServerAppTest {
 
-    @Test
-    void handleClient_getFilms_overSocket() throws Exception {
-        ExecutorService ex = Executors.newSingleThreadExecutor();
+    private ExecutorService executor;
+    private int port;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        TestDatabaseSetup.initDatabase();
+        executor = Executors.newSingleThreadExecutor();
+
+        // Znajdujemy wolny port
         try (ServerSocket ss = new ServerSocket(0)) {
-            int port = ss.getLocalPort();
+            port = ss.getLocalPort();
+        }
+    }
 
-            Future<Void> serverTask = ex.submit(() -> {
-                try (Socket accepted = ss.accept()) {
-                    // wywołaj prywatną metodę handleClient refleksyjnie
-                    Method m = ServerApp.class.getDeclaredMethod("handleClient", Socket.class, FilmRepository.class, UserRepository.class, TransactionRepository.class);
-                    m.setAccessible(true);
-                    m.invoke(null, accepted, new FilmRepository(), new UserRepository(), new TransactionRepository());
-                }
-                return null;
-            });
+    @AfterEach
+    void tearDown() {
+        executor.shutdownNow();
+    }
 
-            // klient
-            try (Socket s = new Socket("127.0.0.1", port);
-                 PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()))
-            ) {
-                out.println("GET_FILMS");
-                String line;
-                boolean sawEnd = false;
-                boolean sawLine = false;
-                while ((line = in.readLine()) != null) {
-                    if ("END".equals(line)) { sawEnd = true; break; }
-                    sawLine = true;
+    @Test
+    void shouldHandleLoginAndGetFilms() throws Exception {
+        // Uruchamiamy "mock" serwera, który używa prawdziwej logiki ClientHandler
+        // ale na naszym testowym porcie
+        ServerSocket serverSocket = new ServerSocket(port);
+
+        executor.submit(() -> {
+            try {
+                Socket clientSocket = serverSocket.accept();
+
+                // Używamy refleksji, żeby utworzyć instancję prywatnej klasy ClientHandler
+                Class<?>[] declaredClasses = ServerApp.class.getDeclaredClasses();
+                Class<?> handlerClass = null;
+                for (Class<?> c : declaredClasses) {
+                    if (c.getName().endsWith("ClientHandler")) {
+                        handlerClass = c;
+                        break;
+                    }
                 }
-                assertTrue(sawLine, "Serwer nie odesłał żadnej linii z filmami");
-                assertTrue(sawEnd, "Serwer nie wysłał END");
+
+                if (handlerClass != null) {
+                    Constructor<?> ctor = handlerClass.getDeclaredConstructor(Socket.class);
+                    ctor.setAccessible(true);
+                    Runnable handler = (Runnable) ctor.newInstance(clientSocket);
+                    handler.run();
+                }
+                serverSocket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        });
 
-            serverTask.get(5, TimeUnit.SECONDS);
-        } finally {
-            ex.shutdownNow();
+        // Symulacja klienta
+        try (Socket socket = new Socket("localhost", port);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // 1. Rejestracja (żeby mieć na co się logować)
+            out.println("REGISTER;test;test");
+            assertEquals("REGISTER_OK", in.readLine());
+
+            // 2. Logowanie
+            out.println("LOGIN;test;test");
+            String loginResp = in.readLine();
+            assertTrue(loginResp.startsWith("LOGIN_OK"), "Logowanie powinno się udać");
+
+            // 3. Pobranie filmów
+            out.println("GET_FILMS");
+            String line = in.readLine();
+            assertNotNull(line);
+            assertTrue(line.contains("Matrix"), "Powinien zwrócić pierwszy film");
+
+            // Czytamy do END
+            while ((line = in.readLine()) != null) {
+                if ("END".equals(line)) break;
+            }
         }
     }
 }

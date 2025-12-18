@@ -1,20 +1,41 @@
 package server;
 
-import org.junit.jupiter.api.*;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
-/*
- Krótko: ta klasa ustawia właściwości JDBC, aby testy używały H2 in-memory
- oraz wskazuje skrypt inicjalizujący w src/test/resources/init.sql.
-*/
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestDatabaseSetup {
 
-    @BeforeAll
-    public void init() {
-        System.setProperty("jdbc.url", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MySQL");
-        System.setProperty("jdbc.user", "sa");
-        System.setProperty("jdbc.pass", "");
-        System.setProperty("jdbc.init", Paths.get("src", "test", "resources", "init.sql").toAbsolutePath().toString());
+    // Konfiguracja H2 w trybie emulacji MySQL
+    private static final String H2_URL = "jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE";
+    private static final String H2_USER = "sa";
+    private static final String H2_PASS = "";
+
+    public static void initDatabase() throws Exception {
+        // 1. Zamiast refleksji, używamy normalnej metody settera
+        Database.setConnectionDetails(H2_URL, H2_USER, H2_PASS);
+
+        // 2. Wczytanie init.sql i wykonanie go w bazie H2
+        try (Connection conn = DriverManager.getConnection(H2_URL, H2_USER, H2_PASS);
+             Statement stmt = conn.createStatement()) {
+
+            // Czyścimy bazę przed każdym testem
+            stmt.execute("DROP ALL OBJECTS");
+
+            InputStream is = TestDatabaseSetup.class.getResourceAsStream("/init.sql");
+            if (is == null) throw new RuntimeException("Nie znaleziono pliku init.sql w resources!");
+
+            String sql = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+
+            // Dzielimy zapytania po średnikach
+            String[] queries = sql.split(";");
+            for (String query : queries) {
+                if (!query.trim().isEmpty()) {
+                    stmt.execute(query.trim());
+                }
+            }
+        }
     }
 }

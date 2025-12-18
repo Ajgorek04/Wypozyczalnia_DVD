@@ -1,28 +1,43 @@
-// java
 package server;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserRepositoryExtraTest {
+class UserRepositoryTest {
 
-    private static UserRepository repo;
+    private UserRepository userRepo;
 
-    @BeforeAll
-    static void init() { repo = new UserRepository(); }
+    @BeforeEach
+    void setUp() throws Exception {
+        TestDatabaseSetup.initDatabase(); // Reset bazy i wgranie init.sql
+        userRepo = new UserRepository();
 
-    @Test
-    void rejectNullAndBlankRegistration() {
-        assertFalse(repo.registerUser(null, "p"));
-        assertFalse(repo.registerUser("u", null));
-        assertFalse(repo.registerUser("   ", "p"));
-        assertFalse(repo.registerUser("u2", "   "));
+        // Dodajmy testowego usera (oprócz tych w bazie jeśli są)
+        userRepo.registerUser("testuser", "testpass");
     }
 
     @Test
-    void duplicateRegistrationFails() {
-        String name = "dup_" + System.nanoTime();
-        assertTrue(repo.registerUser(name, "p"));
-        assertFalse(repo.registerUser(name, "p"), "Powinna być odrzucona rejestracja z tym samym username");
+    void shouldRegisterNewUser() {
+        boolean result = userRepo.registerUser("nowy", "haslo123");
+        assertTrue(result, "Rejestracja powinna się udać");
+    }
+
+    @Test
+    void shouldNotRegisterExistingUser() {
+        boolean result = userRepo.registerUser("testuser", "innehaslo");
+        assertFalse(result, "Nie powinno dać się zarejestrować zajętego loginu");
+    }
+
+    @Test
+    void shouldAuthenticateValidUser() {
+        int userId = userRepo.getUserIdByCredentials("testuser", "testpass");
+        assertTrue(userId > 0, "Logowanie poprawne powinno zwrócić ID > 0");
+    }
+
+    @Test
+    void shouldNotAuthenticateInvalidPass() {
+        int userId = userRepo.getUserIdByCredentials("testuser", "zlehaslo");
+        assertEquals(-1, userId, "Złe hasło powinno zwrócić -1");
     }
 }

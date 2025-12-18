@@ -9,10 +9,11 @@ import java.sql.SQLException;
 
 public class Database {
     private static final Logger logger = LogManager.getLogger(Database.class);
-    // Zmieniłem nazwę bazy na zgodną z Twoim SQL
-    private static final String URL = "jdbc:mysql://localhost:3306/WypozyczalniaPlytDVD";
-    private static final String USER = "root";
-    private static final String PASSWORD = ""; // <-- WPISZ HASŁO JEŚLI MASZ
+
+    // USUNIĘTO słowo 'final', aby można było je zmienić w testach
+    private static String URL = "jdbc:mysql://localhost:3306/WypozyczalniaPlytDVD";
+    private static String USER = "root";
+    private static String PASSWORD = ""; // <-- Twoje hasło
 
     public static Connection connect() {
         try {
@@ -23,5 +24,12 @@ public class Database {
             logger.error("Błąd połączenia z bazą! Sprawdź czy baza 'WypozyczalniaPlytDVD' istnieje.", e);
             return null;
         }
+    }
+
+    // Nowa metoda specjalnie dla testów
+    public static void setConnectionDetails(String url, String user, String password) {
+        URL = url;
+        USER = user;
+        PASSWORD = password;
     }
 }

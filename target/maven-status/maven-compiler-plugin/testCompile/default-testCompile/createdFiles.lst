@@ -1,0 +1,6 @@
+client\ClientRegexTest.class
+server\FilmRepositoryTest.class
+server\TestDatabaseSetup.class
+server\TransactionRepositoryTest.class
+server\UserRepositoryTest.class
+server\ServerAppTest.class

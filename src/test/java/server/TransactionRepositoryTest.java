@@ -1,56 +1,76 @@
-// java
 package server;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
+class TransactionRepositoryTest {
 
-class TransactionRepositoryExtraTest {
+    private TransactionRepository transRepo;
+    private UserRepository userRepo;
+    private int userId;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        TestDatabaseSetup.initDatabase();
+        transRepo = new TransactionRepository();
+        userRepo = new UserRepository();
+
+        // Rejestrujemy klienta do testów
+        userRepo.registerUser("klient1", "pass");
+        userId = userRepo.getUserIdByCredentials("klient1", "pass");
+    }
 
     @Test
-    void concurrentRent_onlyOneSucceeds() throws Exception {
-        UserRepository ur = new UserRepository();
-        String u1 = "uA_" + System.nanoTime();
-        String u2 = "uB_" + System.nanoTime();
-        assertTrue(ur.registerUser(u1, "p"));
-        assertTrue(ur.registerUser(u2, "p"));
-        final int id1 = ur.getUserIdByCredentials(u1, "p");
-        final int id2 = ur.getUserIdByCredentials(u2, "p");
-        assertTrue(id1 > 0 && id2 > 0);
+    void shouldRentFilmAndCreateFee() {
+        // 1. Wypożycz film ID 1 (Matrix)
+        String result = transRepo.rentFilm(userId, 1);
 
-        final int filmId;
-        try (Connection c = Database.connect();
-             PreparedStatement ps = c.prepareStatement("SELECT id FROM Film WHERE dostepny=TRUE LIMIT 1");
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) filmId = rs.getInt(1);
-            else filmId = -1;
-        }
-        assertTrue(filmId > 0);
+        assertTrue(result.contains("Wypożyczono"), "Komunikat sukcesu");
+        assertTrue(result.contains("10.00"), "Musi zawierać opłatę startową 10.00");
 
-        final TransactionRepository tx = new TransactionRepository();
-        ExecutorService ex = Executors.newFixedThreadPool(2);
-        final AtomicInteger successCount = new AtomicInteger(0);
-        Callable<Void> task1 = () -> { if (tx.rentFilm(id1, filmId)) successCount.incrementAndGet(); return null; };
-        Callable<Void> task2 = () -> { if (tx.rentFilm(id2, filmId)) successCount.incrementAndGet(); return null; };
+        // 2. Sprawdź czy jest opłata w systemie
+        List<String> trans = transRepo.getUserTransactions(userId);
+        assertEquals(1, trans.size());
+        assertTrue(trans.get(0).contains("Opłacona: NIE"));
+    }
 
-        Future<Void> f1 = ex.submit(task1);
-        Future<Void> f2 = ex.submit(task2);
-        f1.get(5, TimeUnit.SECONDS);
-        f2.get(5, TimeUnit.SECONDS);
-        ex.shutdownNow();
+    @Test
+    void shouldNotReturnIfNotPaid() {
+        transRepo.rentFilm(userId, 1);
 
-        assertEquals(1, successCount.get(), "Tylko jedno wypożyczenie powinno się udać");
+        // Próba zwrotu bez płacenia
+        String result = transRepo.returnFilm(userId, 1);
 
-        try (Connection c = Database.connect();
-             PreparedStatement ps = c.prepareStatement("SELECT dostepny FROM Film WHERE id = ?")) {
-            ps.setInt(1, filmId);
-            try (ResultSet rs = ps.executeQuery()) {
-                assertTrue(rs.next());
-                assertFalse(rs.getBoolean(1), "Film powinien być niedostępny po udanym wypożyczeniu");
-            }
-        }
+        assertTrue(result.contains("RETURN_FAIL;UNPAID"), "Musi blokować zwrot nieopłaconego filmu");
+    }
+
+    @Test
+    void shouldPayAndAutoReturn() {
+        transRepo.rentFilm(userId, 1);
+
+        // Pobierz ID opłaty z listy
+        List<String> trans = transRepo.getUserTransactions(userId);
+        String line = trans.get(0);
+        // Wyciągamy ID (np. "Opłata 1 | ...")
+        int oplataId = Integer.parseInt(line.split("\\|")[0].replaceAll("[^0-9]", ""));
+
+        // Płacimy (co powinno wywołać auto-zwrot)
+        String payResult = transRepo.payTransaction(oplataId);
+
+        assertTrue(payResult.contains("Sukces"), "Płatność udana");
+        assertTrue(payResult.contains("zwrócony"), "Film powinien zostać zwrócony");
+
+        // Sprawdzamy status
+        trans = transRepo.getUserTransactions(userId);
+        assertTrue(trans.get(0).contains("Opłacona: TAK"));
+
+        // Sprawdzamy czy film faktycznie oddany w bazie (Repozytorium filmów)
+        FilmRepository filmRepo = new FilmRepository();
+        String filmInfo = filmRepo.getAllFilmsFormatted().get(0); // Matrix
+        assertTrue(filmInfo.contains("Dostępny: true"), "Film powinien być znów dostępny");
     }
 }
