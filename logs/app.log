@@ -1,0 +1,379 @@
+2025-12-18 20:21:02 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:21:02 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:21:02 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:21:02 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:21:17 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:21:17 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:21:17 [Thread-0] INFO  server.UserRepository - Pomyślne logowanie użytkownika: user (ID: 1)
+2025-12-18 20:21:18 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:21:18 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:21:18 [Thread-1] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:21:19 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:21:19 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:21:19 [Thread-2] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:21:21 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:21:21 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: RENT;3;1
+2025-12-18 20:21:22 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:21:22 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:22:25 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:22:25 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:22:25 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:22:25 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:22:30 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:31 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:22:31 [Thread-0] WARN  server.UserRepository - Nieudana próba logowania dla użytkownika: user
+2025-12-18 20:22:34 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:34 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: REGISTER;user;user
+2025-12-18 20:22:34 [Thread-1] INFO  server.UserRepository - Utworzono nowego użytkownika: user (ID: 1)
+2025-12-18 20:22:37 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:37 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:22:37 [Thread-2] INFO  server.UserRepository - Pomyślne logowanie użytkownika: user (ID: 1)
+2025-12-18 20:22:37 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:37 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:22:37 [Thread-3] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:22:39 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:39 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:22:39 [Thread-4] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:22:39 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:39 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: RENT;1;1
+2025-12-18 20:22:39 [Thread-5] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1. Startowe: 10.0
+2025-12-18 20:22:41 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:41 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:22:44 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:44 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:22:45 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:45 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:22:46 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:46 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: RETURN;1;1
+2025-12-18 20:22:46 [Thread-9] INFO  server.TransactionRepository - Zwrot filmu 1. Czas: 0 min. Dopłata: 0.0
+2025-12-18 20:22:47 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:47 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:22:49 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:49 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:22:49 [Thread-11] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:22:51 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:51 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:22:51 [Thread-12] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:22:52 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:52 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: RENT;3;1
+2025-12-18 20:22:53 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:53 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:22:53 [Thread-14] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:22:54 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:54 [Thread-15] INFO  server.ServerApp - [Klient] Komenda: RENT;1;1
+2025-12-18 20:22:55 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:55 [Thread-16] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:22:55 [Thread-16] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:22:56 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:56 [Thread-17] INFO  server.ServerApp - [Klient] Komenda: RENT;5;1
+2025-12-18 20:22:58 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:58 [Thread-18] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:22:58 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:22:58 [Thread-19] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:23:30 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:30 [Thread-20] INFO  server.ServerApp - [Klient] Komenda: REGISTER;aa;aa
+2025-12-18 20:23:30 [Thread-20] INFO  server.UserRepository - Utworzono nowego użytkownika: aa (ID: 2)
+2025-12-18 20:23:32 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:32 [Thread-21] INFO  server.ServerApp - [Klient] Komenda: LOGIN;aa;aa
+2025-12-18 20:23:32 [Thread-21] INFO  server.UserRepository - Pomyślne logowanie użytkownika: aa (ID: 2)
+2025-12-18 20:23:33 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:33 [Thread-22] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:23:33 [Thread-22] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:23:35 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:35 [Thread-23] INFO  server.ServerApp - [Klient] Komenda: RENT;6;2
+2025-12-18 20:23:35 [Thread-23] INFO  server.TransactionRepository - Użytkownik 2 wypożyczył film 6. Startowe: 10.0
+2025-12-18 20:23:36 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:36 [Thread-24] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;2
+2025-12-18 20:23:37 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:37 [Thread-25] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;2
+2025-12-18 20:23:37 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:37 [Thread-26] INFO  server.ServerApp - [Klient] Komenda: RETURN;6;2
+2025-12-18 20:23:37 [Thread-26] INFO  server.TransactionRepository - Zwrot filmu 6. Czas: 0 min. Dopłata: 0.0
+2025-12-18 20:23:39 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:23:39 [Thread-27] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;2
+2025-12-18 20:25:46 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:25:46 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:25:46 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:25:46 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:25:51 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:25:51 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: REGISTER;user;user
+2025-12-18 20:25:51 [Thread-0] INFO  server.UserRepository - Utworzono nowego użytkownika: user (ID: 1)
+2025-12-18 20:25:54 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:25:54 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:25:54 [Thread-1] INFO  server.UserRepository - Pomyślne logowanie użytkownika: user (ID: 1)
+2025-12-18 20:25:56 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:25:56 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:25:56 [Thread-2] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:25:57 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:25:57 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:25:57 [Thread-3] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:25:58 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:25:58 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: RENT;6;1
+2025-12-18 20:25:59 [Thread-4] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 6
+2025-12-18 20:26:02 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:02 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:26:02 [Thread-5] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:26:04 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:04 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:26:04 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:04 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: RETURN;6;1
+2025-12-18 20:26:06 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:06 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:26:07 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:07 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:26:09 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:09 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:26:11 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:11 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:26:12 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:12 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: RETURN;6;1
+2025-12-18 20:26:13 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:13 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:26:29 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:26:29 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:17 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:29:17 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:29:17 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:29:17 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:29:22 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:22 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:29:22 [Thread-0] INFO  server.UserRepository - Pomyślne logowanie użytkownika: user (ID: 1)
+2025-12-18 20:29:24 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:24 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:29:24 [Thread-1] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:29:25 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:25 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:29:25 [Thread-2] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:29:26 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:26 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: RENT;2;1
+2025-12-18 20:29:26 [Thread-3] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 2
+2025-12-18 20:29:28 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:28 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:30 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:30 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: PAY;2;10.0;1
+2025-12-18 20:29:31 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:31 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:32 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:32 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: PAY;1;10.0;1
+2025-12-18 20:29:33 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:33 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:29:35 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:35 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:36 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:36 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:29:39 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:39 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: RETURN;2;1
+2025-12-18 20:29:39 [Thread-11] INFO  server.TransactionRepository - Zwrot filmu 2 zakończony.
+2025-12-18 20:29:40 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:40 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:29:40 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:40 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: RETURN;6;1
+2025-12-18 20:29:40 [Thread-13] INFO  server.TransactionRepository - Zwrot filmu 6 zakończony.
+2025-12-18 20:29:44 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:44 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:48 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:48 [Thread-15] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:50 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:50 [Thread-16] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:29:51 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:51 [Thread-17] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:29:53 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:29:53 [Thread-18] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:30:40 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:30:40 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:30:40 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:30:40 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:30:44 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:44 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: REGISTER;u;u
+2025-12-18 20:30:44 [Thread-0] INFO  server.UserRepository - Utworzono nowego użytkownika: u (ID: 1)
+2025-12-18 20:30:47 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:47 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: LOGIN;u;u
+2025-12-18 20:30:47 [Thread-1] INFO  server.UserRepository - Pomyślne logowanie użytkownika: u (ID: 1)
+2025-12-18 20:30:48 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:48 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:30:48 [Thread-2] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:30:49 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:49 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:30:49 [Thread-3] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:30:50 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:50 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: RENT;6;1
+2025-12-18 20:30:50 [Thread-4] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 6
+2025-12-18 20:30:52 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:52 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:30:53 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:53 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: RETURN;6;1
+2025-12-18 20:30:56 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:30:56 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:34:40 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:40 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: LOGIN;u;u
+2025-12-18 20:34:40 [Thread-8] INFO  server.UserRepository - Pomyślne logowanie użytkownika: u (ID: 1)
+2025-12-18 20:34:41 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:41 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:34:44 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:44 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:34:45 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:45 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: PAY;1;10.0;1
+2025-12-18 20:34:47 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:47 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:34:49 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:49 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:34:51 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:51 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:34:53 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:53 [Thread-15] INFO  server.ServerApp - [Klient] Komenda: RETURN;6;1
+2025-12-18 20:34:53 [Thread-15] INFO  server.TransactionRepository - Zwrot filmu 6 zakończony.
+2025-12-18 20:34:55 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:55 [Thread-16] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:34:58 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:58 [Thread-17] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:34:58 [Thread-17] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:34:59 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:34:59 [Thread-18] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:35:34 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:35:34 [Thread-19] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:35:36 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:35:36 [Thread-20] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:35:37 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:35:37 [Thread-21] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:35:39 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:35:39 [Thread-22] INFO  server.ServerApp - [Klient] Komenda: PAY;2;6.0;1
+2025-12-18 20:39:14 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:39:14 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:39:14 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:39:14 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:39:24 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:39:24 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: REGISTER;user;user
+2025-12-18 20:39:24 [Thread-0] INFO  server.UserRepository - Utworzono nowego użytkownika: user (ID: 1)
+2025-12-18 20:39:27 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:39:27 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:39:27 [Thread-1] INFO  server.UserRepository - Pomyślne logowanie użytkownika: user (ID: 1)
+2025-12-18 20:39:28 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:39:28 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:39:28 [Thread-2] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:39:29 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:39:29 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:39:29 [Thread-3] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:39:32 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:39:32 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: RENT;6;1
+2025-12-18 20:39:32 [Thread-4] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 6
+2025-12-18 20:39:34 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:39:34 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:44:11 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:11 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:44:13 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:13 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:44:15 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:15 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:44:20 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:20 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:44:21 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:21 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:44:22 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:22 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: PAY;1;16.0;1
+2025-12-18 20:44:22 [Thread-11] INFO  server.TransactionRepository - Auto-zwrot filmu ID: 6 przy płatności.
+2025-12-18 20:44:24 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:24 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:44:25 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:25 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:44:27 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:27 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:44:27 [Thread-14] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:44:28 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:28 [Thread-15] INFO  server.ServerApp - [Klient] Komenda: RENT;1;1
+2025-12-18 20:44:28 [Thread-15] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 20:44:29 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:29 [Thread-16] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:44:30 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:30 [Thread-17] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:44:31 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:31 [Thread-18] INFO  server.ServerApp - [Klient] Komenda: PAY;2;10.0;1
+2025-12-18 20:44:31 [Thread-18] INFO  server.TransactionRepository - Auto-zwrot filmu ID: 1 przy płatności.
+2025-12-18 20:44:33 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:44:33 [Thread-19] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:48:43 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:48:43 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:48:43 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:48:43 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:48:48 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:48 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:48:48 [Thread-0] INFO  server.UserRepository - Pomyślne logowanie użytkownika: user (ID: 1)
+2025-12-18 20:48:49 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:49 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:48:49 [Thread-1] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:48:51 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:51 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: RENT;1;1
+2025-12-18 20:48:51 [Thread-2] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 20:48:53 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:53 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:48:57 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:57 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:48:57 [Thread-4] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:48:58 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:58 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:48:59 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:48:59 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: PAY;3;0.0;1
+2025-12-18 20:48:59 [Thread-6] INFO  server.TransactionRepository - Auto-zwrot filmu ID: 1 przy płatności.
+2025-12-18 20:49:02 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:02 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:49:11 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:11 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:49:11 [Thread-8] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:49:12 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:12 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:49:12 [Thread-9] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:49:14 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:14 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: RENT;3;1
+2025-12-18 20:49:14 [Thread-10] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 3
+2025-12-18 20:49:15 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:15 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:49:17 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:17 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:49:18 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:18 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: PAY;4;0.0;1
+2025-12-18 20:49:18 [Thread-13] INFO  server.TransactionRepository - Auto-zwrot filmu ID: 3 przy płatności.
+2025-12-18 20:49:19 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:19 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:49:38 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:49:38 [Thread-15] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:50:43 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:50:43 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 20:50:43 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 20:50:43 [main] INFO  server.ServerApp - ========================================
+2025-12-18 20:50:46 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:50:46 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 20:50:47 [Thread-0] WARN  server.UserRepository - Nieudana próba logowania dla użytkownika: user
+2025-12-18 20:50:55 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:50:55 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: REGISTER;u;u
+2025-12-18 20:50:55 [Thread-1] INFO  server.UserRepository - Utworzono nowego użytkownika: u (ID: 1)
+2025-12-18 20:50:59 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:50:59 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: LOGIN;u;u
+2025-12-18 20:50:59 [Thread-2] INFO  server.UserRepository - Pomyślne logowanie użytkownika: u (ID: 1)
+2025-12-18 20:51:00 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:00 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:51:02 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:02 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 20:51:02 [Thread-4] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 20:51:03 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:03 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: RENT;1;1
+2025-12-18 20:51:03 [Thread-5] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 20:51:05 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:05 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:51:06 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:06 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:51:09 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:09 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:51:54 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:51:54 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:52:34 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:52:34 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:52:36 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:52:36 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 20:52:37 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:52:37 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:52:38 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:52:38 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: PAY;1;0.0;1
+2025-12-18 20:52:38 [Thread-13] INFO  server.TransactionRepository - Auto-zwrot filmu ID: 1 przy płatności.
+2025-12-18 20:52:40 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:52:40 [Thread-14] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 20:52:42 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 20:52:42 [Thread-15] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1

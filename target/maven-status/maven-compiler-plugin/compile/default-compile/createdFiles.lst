@@ -1,6 +1,7 @@
 client\MainClient$1.class
 client\ClientApp.class
 server\FilmRepository.class
+server\ServerApp$ClientHandler.class
 server\UserRepository.class
 server\ServerApp.class
 client\MainClient.class

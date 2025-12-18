@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 public class MainClient {
 
     private static int loggedUserId = -1;
+    // Ustaw port zgodny z serwerem
+    private static final int PORT = 5000;
+    private static final String HOST = "127.0.0.1";
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -120,7 +123,7 @@ public class MainClient {
 
     private static JFrame buildDashboardFrame(JFrame mainFrame) {
         JFrame frame = new JFrame("Panel użytkownika - ID: " + loggedUserId);
-        frame.setSize(520, 360);
+        frame.setSize(520, 420); // Trochę większe okno, bo więcej przycisków
         frame.setLocationRelativeTo(mainFrame);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -136,12 +139,17 @@ public class MainClient {
         JButton moviesBtn = new JButton("Lista Filmów");
         JButton rentBtn = new JButton("Wypożycz film");
         JButton myRentsBtn = new JButton("Moje wypożyczenia");
+
+        // PRZYWRÓCONE: Przycisk do podglądu historii
         JButton myTransBtn = new JButton("Moje transakcje / opłaty");
-        JButton payBtn = new JButton("Zapłać opłatę");
-        JButton returnBtn = new JButton("Zwróć film");
+
+        // NOWE: Przycisk akcji (płatność + zwrot)
+        JButton payAndReturnBtn = new JButton("Zapłać i zwróć film");
+
         JButton logoutBtn = new JButton("Wyloguj");
 
-        for (JComponent c : new JComponent[]{moviesBtn, rentBtn, myRentsBtn, myTransBtn, payBtn, returnBtn, logoutBtn}) {
+        // Dodajemy wszystkie przyciski do panelu
+        for (JComponent c : new JComponent[]{moviesBtn, rentBtn, myRentsBtn, myTransBtn, payAndReturnBtn, logoutBtn}) {
             c.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(c);
             panel.add(Box.createRigidArea(new Dimension(0,8)));
@@ -172,12 +180,11 @@ public class MainClient {
             List<String> available = new ArrayList<>();
             Pattern idPattern = Pattern.compile("^(\\d+)\\.");
             for (String l : lines) {
-                // include only available films (contains "Dostępny: true")
-                if (l.contains("Dostępny: true") || l.contains("Dostępny: true")) {
+                // Szukamy filmów, które są dostępne
+                if (l.contains("Dostępny: true") || l.contains("Dostepny: true")) {
                     Matcher m = idPattern.matcher(l);
                     if (m.find()) {
                         String id = m.group(1);
-                        // display "id - title..."
                         String display = id + " - " + l.substring(l.indexOf(".") + 1).trim();
                         available.add(display);
                     }
@@ -207,7 +214,6 @@ public class MainClient {
             JOptionPane.showMessageDialog(frame, "Serwer: " + reply);
         });
 
-
         myRentsBtn.addActionListener(e -> {
             if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
             JFrame f = new JFrame("Moje wypożyczenia");
@@ -227,6 +233,7 @@ public class MainClient {
             }
         });
 
+        // PRZYWRÓCONA OBSŁUGA PRZYCISKU "MOJE TRANSAKCJE"
         myTransBtn.addActionListener(e -> {
             if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
             JFrame f = new JFrame("Moje transakcje / opłaty");
@@ -246,99 +253,56 @@ public class MainClient {
             }
         });
 
-        payBtn.addActionListener(e -> {
+        // GŁÓWNY PRZYCISK DO ZWROTU I PŁATNOŚCI
+        payAndReturnBtn.addActionListener(e -> {
             if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
 
             List<String> lines = sendCommandLines("MY_TRANS;" + loggedUserId);
             if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia z serwerem"); return; }
 
             List<String> unpaid = new ArrayList<>();
-            Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*)\\s+\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
+            // Regex obsługujący kropki i "zł"
+            Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
+
             for (String l : lines) {
                 Matcher m = p.matcher(l);
                 if (m.find()) {
                     String status = m.group(4);
+                    // Pokazujemy tylko te NIEOPŁACONE
                     if ("NIE".equalsIgnoreCase(status)) {
-                        String item = m.group(1) + " - " + m.group(2) + " zł - " + m.group(3);
+                        String item = "Opłata ID: " + m.group(1) + " | Kwota: " + m.group(2) + " zł | Za: " + m.group(3);
                         unpaid.add(item);
                     }
                 }
             }
 
             if (unpaid.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Brak nieopłaconych opłat.");
+                JOptionPane.showMessageDialog(frame, "Brak opłat do uregulowania (Wszystkie filmy zwrócone i opłacone).");
                 return;
             }
 
             JComboBox<String> combo = new JComboBox<>(unpaid.toArray(new String[0]));
-            int res = JOptionPane.showConfirmDialog(frame, combo, "Wybierz opłatę do zapłacenia", JOptionPane.OK_CANCEL_OPTION);
+            int res = JOptionPane.showConfirmDialog(frame, combo, "Wybierz rachunek do opłacenia (Spowoduje zwrot filmu)", JOptionPane.OK_CANCEL_OPTION);
             if (res != JOptionPane.OK_OPTION) return;
 
             String selected = (String) combo.getSelectedItem();
             if (selected == null) return;
 
-            String[] parts = selected.split("\\s*-\\s*");
-            if (parts.length < 2) { JOptionPane.showMessageDialog(frame, "Błąd parsowania opłaty"); return; }
-            int oplataId;
-            double kwota;
-            try {
-                oplataId = Integer.parseInt(parts[0].trim());
-                String kw = parts[1].trim().replace("zł", "").trim();
-                kwota = Double.parseDouble(kw);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Błąd parsowania kwoty/id");
+            Pattern idExtract = Pattern.compile("ID:\\s*(\\d+)");
+            Matcher mId = idExtract.matcher(selected);
+            int oplataId = -1;
+            if (mId.find()) {
+                oplataId = Integer.parseInt(mId.group(1));
+            } else {
+                JOptionPane.showMessageDialog(frame, "Błąd parsowania ID opłaty");
                 return;
             }
+
+            // Kwota nie jest ważna w żądaniu, serwer sam ją wyliczy na podstawie czasu
+            double kwota = 0.0;
 
             String reply = sendCommand("PAY;" + oplataId + ";" + kwota + ";" + loggedUserId);
             JOptionPane.showMessageDialog(frame, "Serwer: " + reply);
-        });
-
-        returnBtn.addActionListener(e -> {
-            if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
-
-            List<String> lines = sendCommandLines("MY_RENTS;" + loggedUserId);
-            if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia z serwerem"); return; }
-
-            List<String> active = new ArrayList<>();
-            Pattern idPattern = Pattern.compile("^(\\d+)\\.");
-            for (String l : lines) {
-                // tylko te niezwrocone (Zwrócono: null)
-                if (l.contains("Zwrócono: null")) {
-                    Matcher m = idPattern.matcher(l);
-                    if (m.find()) {
-                        String id = m.group(1);
-                        String display = id + " - " + l.substring(l.indexOf(".") + 1).trim();
-                        active.add(display);
-                    }
-                }
-            }
-
-            if (active.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Brak wypożyczeń do zwrotu.");
-                return;
-            }
-
-            JComboBox<String> combo = new JComboBox<>(active.toArray(new String[0]));
-            int res = JOptionPane.showConfirmDialog(frame, combo, "Wybierz film do zwrotu", JOptionPane.OK_CANCEL_OPTION);
-            if (res != JOptionPane.OK_OPTION) return;
-
-            String selected = (String) combo.getSelectedItem();
-            if (selected == null) return;
-            int filmId;
-            try {
-                filmId = Integer.parseInt(selected.split("\\s*-\\s*", 2)[0].trim());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Błąd parsowania id filmu");
-                return;
-            }
-
-            String reply = sendCommand("RETURN;" + filmId + ";" + loggedUserId);
-            if (reply != null && reply.startsWith("RETURN_FAIL;UNPAID")) {
-                JOptionPane.showMessageDialog(frame, "Nie można zwrócić - są nieopłacone opłaty");
-            } else {
-                JOptionPane.showMessageDialog(frame, "Serwer: " + reply);
-            }
         });
 
         logoutBtn.addActionListener(e -> {
@@ -358,7 +322,7 @@ public class MainClient {
     }
 
     private static String sendCommand(String cmd) {
-        try (Socket socket = new Socket("127.0.0.1", 5000);
+        try (Socket socket = new Socket(HOST, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
@@ -372,7 +336,7 @@ public class MainClient {
 
     private static List<String> sendCommandLines(String cmd) {
         List<String> result = new ArrayList<>();
-        try (Socket socket = new Socket("127.0.0.1", 5000);
+        try (Socket socket = new Socket(HOST, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
