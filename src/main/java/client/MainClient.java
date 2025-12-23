@@ -1,7 +1,9 @@
 package client;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -161,7 +163,7 @@ public class MainClient {
         JButton rentBtn = createModernButton("Wypożycz film", new Color(41, 128, 185));
         JButton myRentsBtn = createModernButton("Moje wypożyczenia", new Color(39, 174, 96)); // Zielony
         JButton myTransBtn = createModernButton("Moje transakcje / opłaty", new Color(211, 84, 0)); // Pomarańczowy
-        JButton payAndReturnBtn = createModernButton("Zapłać i zwróć film", new Color(192, 57, 43)); // Czerwony (akcja ważna)
+        JButton payAndReturnBtn = createModernButton("Zapłać i zwróć film", new Color(192, 57, 43)); // Czerwony
         JButton logoutBtn = createModernButton("Wyloguj", new Color(90, 90, 90));
 
         for (JComponent c : new JComponent[]{moviesBtn, rentBtn, myRentsBtn, myTransBtn, payAndReturnBtn, new JSeparator(), logoutBtn}) {
@@ -190,7 +192,6 @@ public class MainClient {
             List<String> available = new ArrayList<>();
             Pattern idPattern = Pattern.compile("^(\\d+)\\.");
             for (String l : lines) {
-                // POPRAWKA: Teraz szukamy "Dostępny: Tak" (dzięki zmianie w FilmRepository)
                 if (l.contains("Dostępny: Tak") || l.contains("Dostepny: Tak")) {
                     Matcher m = idPattern.matcher(l);
                     if (m.find()) available.add(m.group(1) + " - " + l.substring(l.indexOf(".") + 1).trim());
@@ -217,7 +218,6 @@ public class MainClient {
             if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia"); return; }
 
             List<String> unpaid = new ArrayList<>();
-            // Regex bez zmian (kwoty i opłaty)
             Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
 
             for (String l : lines) {
@@ -253,9 +253,12 @@ public class MainClient {
         return frame;
     }
 
+    // --- GUI: PANEL ADMINISTRATORA (POPRAWIONY) ---
+
     private static JFrame buildAdminFrame(JFrame mainFrame) {
         JFrame frame = new JFrame("Panel Administratora");
-        frame.setSize(700, 500);
+        // ZWIĘKSZONA WYSOKOŚĆ, żeby przyciski się nie ucinały
+        frame.setSize(700, 600);
         frame.setLocationRelativeTo(mainFrame);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -282,9 +285,12 @@ public class MainClient {
         listWrapper.add(new JScrollPane(userList), BorderLayout.CENTER);
         bgPanel.add(listWrapper, BorderLayout.CENTER);
 
-        JPanel btnPanel = new JPanel();
+        // --- ZMIANA: GRID LAYOUT DLA PRZYCISKÓW ---
+        // Ustawiamy przyciski w siatce 2 wiersze x 2 kolumny, z odstępami 15px
+        // Dzięki temu nie będą znikać poza ekranem
+        JPanel btnPanel = new JPanel(new GridLayout(2, 2, 15, 15));
         btnPanel.setOpaque(false);
-        btnPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        btnPanel.setBorder(new EmptyBorder(20, 40, 30, 40)); // Margines od dołu i boków
 
         JButton refreshBtn = createModernButton("Odśwież", new Color(41, 128, 185));
         JButton deleteBtn = createModernButton("Usuń użytkownika", new Color(192, 57, 43));
@@ -340,7 +346,7 @@ public class MainClient {
         return frame;
     }
 
-    // --- CUSTOM SWING COMPONENTS (NOWOCZESNE) ---
+    // --- CUSTOM SWING COMPONENTS ---
 
     static class DarkGradientPanel extends JPanel {
         @Override
@@ -348,14 +354,12 @@ public class MainClient {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            // Elegancki ciemny gradient
             GradientPaint gp = new GradientPaint(0, 0, new Color(43, 50, 58), 0, getHeight(), new Color(20, 20, 20));
             g2d.setPaint(gp);
             g2d.fillRect(0, 0, getWidth(), getHeight());
         }
     }
 
-    // Nowy przycisk z efektem szkła/glossy
     static class ModernButton extends JButton {
         private Color baseColor;
         private boolean isHovered = false;
@@ -370,7 +374,7 @@ public class MainClient {
             setFont(MAIN_FONT);
             setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            // Ustawiamy preferowany rozmiar, żeby nie były takie długie
+            // Preferowany rozmiar (szerokość przycisków)
             Dimension size = new Dimension(260, 45);
             setPreferredSize(size);
             setMaximumSize(size);
@@ -390,24 +394,20 @@ public class MainClient {
             int w = getWidth();
             int h = getHeight();
 
-            // Kolor bazowy (jaśniejszy po najechaniu)
             Color c = isHovered ? baseColor.brighter() : baseColor;
 
-            // Gradient "wypukłości" (góra jaśniejsza, dół ciemniejszy)
             GradientPaint gp = new GradientPaint(0, 0, c.brighter(), 0, h, c.darker());
             g2.setPaint(gp);
-            g2.fillRoundRect(0, 0, w, h, 15, 15); // Zaokrąglone rogi (radius 15)
+            g2.fillRoundRect(0, 0, w, h, 15, 15);
 
-            // Efekt "szkła" na górnej połowie (biały półprzezroczysty)
             g2.setPaint(new GradientPaint(0, 0, new Color(255,255,255, 80), 0, h/2, new Color(255,255,255, 10)));
             g2.fillRoundRect(0, 0, w, h/2, 15, 15);
 
-            // Cień (Border)
             g2.setColor(new Color(0,0,0, 50));
             g2.drawRoundRect(0, 0, w-1, h-1, 15, 15);
 
             g2.dispose();
-            super.paintComponent(g); // Rysuje tekst
+            super.paintComponent(g);
         }
     }
 
