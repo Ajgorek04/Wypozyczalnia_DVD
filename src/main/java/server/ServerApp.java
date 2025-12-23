@@ -58,14 +58,13 @@ public class ServerApp {
 
                     try {
                         switch (command) {
-                            case "LOGIN": // LOGIN;user;pass
+                            case "LOGIN":
                                 if (parts.length < 3) { out.println("LOGIN_FAIL"); break; }
                                 int userId = userRepo.getUserIdByCredentials(parts[1], parts[2]);
-                                // Zwracamy ID. Jeśli to admin, klient to rozpozna po loginie.
                                 out.println(userId >= 0 ? "LOGIN_OK;" + userId : "LOGIN_FAIL");
                                 break;
 
-                            case "REGISTER": // REGISTER;user;pass
+                            case "REGISTER":
                                 if (parts.length < 3) { out.println("REGISTER_FAIL"); break; }
                                 boolean regOk = userRepo.registerUser(parts[1], parts[2]);
                                 out.println(regOk ? "REGISTER_OK" : "REGISTER_FAIL");
@@ -77,33 +76,32 @@ public class ServerApp {
                                 out.println("END");
                                 break;
 
-                            case "RENT": // RENT;filmId;userId
+                            case "RENT":
                                 if (parts.length < 3) { out.println("Błąd danych"); break; }
                                 String rentResult = transRepo.rentFilm(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
                                 out.println(rentResult);
                                 break;
 
-                            case "MY_TRANS": // MY_TRANS;userId
+                            case "MY_TRANS":
                                 if (parts.length < 2) { out.println("END"); break; }
                                 List<String> trans = transRepo.getUserTransactions(Integer.parseInt(parts[1]));
                                 for (String t : trans) out.println(t);
                                 out.println("END");
                                 break;
 
-                            case "PAY": // PAY;oplataId;0.0;userId
+                            case "PAY":
                                 if (parts.length < 2) { out.println("Błąd"); break; }
                                 String payResult = transRepo.payTransaction(Integer.parseInt(parts[1]));
                                 out.println(payResult);
                                 break;
 
-                            case "MY_RENTS": // MY_RENTS;userId
+                            case "MY_RENTS":
                                 if (parts.length < 2) { out.println("END"); break; }
                                 List<String> rents = transRepo.getUserRentals(Integer.parseInt(parts[1]));
                                 for (String r : rents) out.println(r);
                                 out.println("END");
                                 break;
 
-                            // --- KOMENDY ADMINA ---
 
                             case "ADMIN_GET_USERS":
                                 List<String> users = userRepo.getAllUsers();
@@ -111,13 +109,13 @@ public class ServerApp {
                                 out.println("END");
                                 break;
 
-                            case "ADMIN_DEL_USER": // ADMIN_DEL_USER;userIdToDelete
+                            case "ADMIN_DEL_USER":
                                 if (parts.length < 2) { out.println("ERROR"); break; }
                                 boolean delOk = userRepo.deleteUser(Integer.parseInt(parts[1]));
                                 out.println(delOk ? "Usunięto pomyślnie" : "Błąd usuwania (może użytkownik nie istnieje?)");
                                 break;
 
-                            case "ADMIN_PASS": // ADMIN_PASS;userId;newPass
+                            case "ADMIN_PASS":
                                 if (parts.length < 3) { out.println("ERROR"); break; }
                                 boolean passOk = userRepo.changeUserPassword(Integer.parseInt(parts[1]), parts[2]);
                                 out.println(passOk ? "Hasło zmienione" : "Błąd zmiany hasła");
@@ -133,7 +131,6 @@ public class ServerApp {
                     }
                 }
             } catch (IOException e) {
-                // logger.info("Klient rozłączony.");
             } finally {
                 try { socket.close(); } catch (IOException e) {}
             }

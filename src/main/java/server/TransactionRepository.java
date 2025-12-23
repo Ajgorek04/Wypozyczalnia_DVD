@@ -16,7 +16,6 @@ public class TransactionRepository {
     private static final double OPLATA_STARTOWA = 10.00;
     private static final double STAWKA_ZA_MINUTE = 1.50;
 
-    // --- WYPOŻYCZANIE ---
     public String rentFilm(int userId, int filmId) {
         Connection conn = Database.connect();
         if (conn == null) return "Błąd połączenia z bazą";
@@ -24,7 +23,6 @@ public class TransactionRepository {
         try {
             conn.setAutoCommit(false);
 
-            // Sprawdź dostępność
             boolean available = false;
             try (PreparedStatement ps = conn.prepareStatement("SELECT dostepny FROM Film WHERE id = ? FOR UPDATE")) {
                 ps.setInt(1, filmId);
@@ -37,7 +35,6 @@ public class TransactionRepository {
                 return "Film jest niedostępny";
             }
 
-            // Utwórz transakcję
             int transakcjaId = -1;
             String insertTrans = "INSERT INTO Transakcja (klient_id, film_id, dataWypozyczenia) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(insertTrans, Statement.RETURN_GENERATED_KEYS)) {
@@ -49,13 +46,11 @@ public class TransactionRepository {
                 if (keys.next()) transakcjaId = keys.getInt(1);
             }
 
-            // Zablokuj film
             try (PreparedStatement ps = conn.prepareStatement("UPDATE Film SET dostepny = 0 WHERE id = ?")) {
                 ps.setInt(1, filmId);
                 ps.executeUpdate();
             }
 
-            // Utwórz opłatę startową (10 zł)
             String feeSql = "INSERT INTO Oplata (transakcja_id, kwota, powod) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(feeSql)) {
                 ps.setInt(1, transakcjaId);
@@ -77,10 +72,7 @@ public class TransactionRepository {
         }
     }
 
-    // --- ZWRACANIE (Teraz tylko informuje) ---
     public String returnFilm(int userId, int filmId) {
-        // Nowa logika: Zwrot następuje przy płatności.
-        // Tutaj sprawdzamy, czy film jest opłacony.
         Connection conn = Database.connect();
         try {
             String check = "SELECT count(*) FROM Transakcja t JOIN Oplata o ON o.transakcja_id = t.id " +
@@ -100,10 +92,8 @@ public class TransactionRepository {
         }
     }
 
-    // --- LISTA OPŁAT (Dynamiczne liczenie ceny!) ---
     public List<String> getUserTransactions(int userId) {
         List<String> list = new ArrayList<>();
-        // Pobieramy dane o opłacie i powiązanej transakcji (czy film oddany czy nie)
         String sql = "SELECT o.id, o.kwota, o.powod, o.rachunek_id, t.dataWypozyczenia, t.dataZwrotu " +
                 "FROM Oplata o JOIN Transakcja t ON o.transakcja_id = t.id " +
                 "WHERE t.klient_id = ?";
@@ -131,12 +121,10 @@ public class TransactionRepository {
                     double doplata = minuty * STAWKA_ZA_MINUTE;
                     double calaSuma = kwotaBaza + doplata; // 10.00 + (min * 1.50)
 
-                    // Nadpisujemy wyświetlaną kwotę i powód
                     kwotaBaza = calaSuma;
                     powod = String.format(Locale.US, "Suma bieżąca (Start + %d min)", minuty);
                 }
 
-                // Formatowanie z kropką (Locale.US) dla klienta
                 String line = String.format(Locale.US, "Opłata %d | kwota: %.2f zł | powód: %s | Opłacona: %s",
                         oid, kwotaBaza, powod, (oplacona ? "TAK" : "NIE"));
                 list.add(line);
@@ -145,7 +133,6 @@ public class TransactionRepository {
         return list;
     }
 
-    // --- PŁATNOŚĆ = ZWROT FILMU ---
     public String payTransaction(int oplataId) {
         Connection conn = Database.connect();
         if (conn == null) return "Błąd połączenia";
@@ -160,7 +147,6 @@ public class TransactionRepository {
             Timestamp dataWyp = null;
             Timestamp dataZwrotu = null;
 
-            // 1. Pobierz szczegóły opłaty i transakcji
             String sqlCheck = "SELECT t.klient_id, t.id as tid, t.film_id, t.dataWypozyczenia, t.dataZwrotu, o.kwota, o.rachunek_id " +
                     "FROM Oplata o JOIN Transakcja t ON o.transakcja_id = t.id " +
                     "WHERE o.id = ? FOR UPDATE"; // Blokujemy rekord
@@ -182,11 +168,9 @@ public class TransactionRepository {
                 }
             }
 
-            // 2. Oblicz FINALNĄ kwotę (Start + Czas)
             double finalnaKwota = kwotaStartowa;
             String opisRachunku = "Opłacenie wypożyczenia";
 
-            // Jeśli film jeszcze nie oddany (dataZwrotu == null), to go oddajemy TERAZ
             if (dataZwrotu == null) {
                 LocalDateTime now = LocalDateTime.now();
                 long minuty = Duration.between(dataWyp.toLocalDateTime(), now).toMinutes();
@@ -196,13 +180,11 @@ public class TransactionRepository {
                 finalnaKwota += kosztCzasu;
                 opisRachunku = String.format(Locale.US, "Startowe + Czas (%d min)", minuty);
 
-                // A. Zamknij transakcję (ZWRÓĆ FILM)
                 try (PreparedStatement ps = conn.prepareStatement("UPDATE Transakcja SET dataZwrotu = ? WHERE id = ?")) {
                     ps.setTimestamp(1, Timestamp.valueOf(now));
                     ps.setInt(2, transakcjaId);
                     ps.executeUpdate();
                 }
-                // B. Odblokuj film
                 try (PreparedStatement ps = conn.prepareStatement("UPDATE Film SET dostepny = 1 WHERE id = ?")) {
                     ps.setInt(1, filmId);
                     ps.executeUpdate();
@@ -210,7 +192,6 @@ public class TransactionRepository {
                 logger.info("Auto-zwrot filmu ID: " + filmId + " przy płatności.");
             }
 
-            // 3. Zaktualizuj kwotę w Opłacie (żeby w bazie była historia ile faktycznie zapłacono)
             try (PreparedStatement ps = conn.prepareStatement("UPDATE Oplata SET kwota = ?, powod = ? WHERE id = ?")) {
                 ps.setDouble(1, finalnaKwota);
                 ps.setString(2, opisRachunku);
@@ -218,7 +199,6 @@ public class TransactionRepository {
                 ps.executeUpdate();
             }
 
-            // 4. Wystaw Rachunek
             int nowyRachunekId = -1;
             String insRachunek = "INSERT INTO Rachunek (klient_id, dataWystawienia, lacznaKwota) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(insRachunek, Statement.RETURN_GENERATED_KEYS)) {
@@ -230,7 +210,6 @@ public class TransactionRepository {
                 if (keys.next()) nowyRachunekId = keys.getInt(1);
             }
 
-            // 5. Powiąż Rachunek (oznacz jako opłacone)
             try (PreparedStatement ps = conn.prepareStatement("UPDATE Oplata SET rachunek_id = ? WHERE id = ?")) {
                 ps.setInt(1, nowyRachunekId);
                 ps.setInt(2, oplataId);

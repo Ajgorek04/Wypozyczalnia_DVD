@@ -1,7 +1,10 @@
 package client;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -15,51 +18,70 @@ public class MainClient {
     private static final int PORT = 5000;
     private static final String HOST = "127.0.0.1";
 
+    // Czcionka i kolory
+    private static final Font MAIN_FONT = new Font("Segoe UI", Font.BOLD, 14);
+    private static final Color TEXT_COLOR = Color.WHITE;
+
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {}
+
         SwingUtilities.invokeLater(() -> {
             JFrame mainFrame = buildMainFrame();
             mainFrame.setVisible(true);
         });
     }
 
+    // --- GUI: OKNO GŁÓWNE (LOGOWANIE) ---
+
     private static JFrame buildMainFrame() {
-        JFrame frame = new JFrame("Wypożyczalnia DVD - Klient");
-        frame.setSize(520, 360);
+        JFrame frame = new JFrame("Wypożyczalnia DVD - Witaj");
+        frame.setSize(550, 550);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        DarkGradientPanel bgPanel = new DarkGradientPanel();
+        bgPanel.setLayout(new GridBagLayout());
+        frame.setContentPane(bgPanel);
 
-        JLabel title = new JLabel("Wypożyczalnia Płyt DVD");
-        title.setFont(new Font("Arial", Font.BOLD, 22));
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(new EmptyBorder(40, 60, 40, 60));
+
+        JLabel title = new JLabel("Wypożyczalnia DVD");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        title.setForeground(new Color(255, 204, 0)); // Złoty
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        panel.add(title);
 
-        JButton loginBtn = new JButton("Zaloguj się");
-        JButton registerBtn = new JButton("Zarejestruj się");
-        JButton moviesBtn = new JButton("Lista Filmów");
-        JButton exitBtn = new JButton("Wyjście");
+        contentPanel.add(title);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 
-        for (JComponent c : new JComponent[]{loginBtn, registerBtn, moviesBtn, exitBtn}) {
-            c.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(c);
-            panel.add(Box.createRigidArea(new Dimension(0, 8)));
+        // Przyciski
+        JButton loginBtn = createModernButton("Zaloguj się", new Color(41, 128, 185)); // Niebieski
+        JButton registerBtn = createModernButton("Zarejestruj się", new Color(41, 128, 185));
+        JButton moviesBtn = createModernButton("Przeglądaj Filmy (Gość)", new Color(142, 68, 173)); // Fioletowy
+        JButton exitBtn = createModernButton("Wyjście", new Color(90, 90, 90)); // Szary
+
+        for (JButton btn : new JButton[]{loginBtn, registerBtn, moviesBtn, exitBtn}) {
+            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            contentPanel.add(btn);
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
 
-        frame.add(panel);
+        bgPanel.add(contentPanel);
+
+        // --- AKCJE ---
 
         exitBtn.addActionListener(e -> System.exit(0));
 
         loginBtn.addActionListener(e -> {
-            JPanel p = new JPanel(new GridLayout(2,2));
+            JPanel p = new JPanel(new GridLayout(2,2, 5, 5));
             JTextField userField = new JTextField();
             JPasswordField passField = new JPasswordField();
-            p.add(new JLabel("Użytkownik:"));
-            p.add(userField);
-            p.add(new JLabel("Hasło:"));
-            p.add(passField);
+            p.add(new JLabel("Użytkownik:")); p.add(userField);
+            p.add(new JLabel("Hasło:")); p.add(passField);
 
             int result = JOptionPane.showConfirmDialog(frame, p, "Logowanie", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
@@ -72,7 +94,6 @@ public class MainClient {
                     loggedUserId = Integer.parseInt(parts[1]);
                     frame.setVisible(false);
 
-                    // --- LOGIKA ADMINA ---
                     if ("admin".equals(user)) {
                         JFrame adminFrame = buildAdminFrame(frame);
                         adminFrame.setVisible(true);
@@ -80,21 +101,18 @@ public class MainClient {
                         JFrame dashboard = buildDashboardFrame(frame);
                         dashboard.setVisible(true);
                     }
-
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Błąd logowania");
+                    JOptionPane.showMessageDialog(frame, "Błąd logowania", "Błąd", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         registerBtn.addActionListener(e -> {
-            JPanel p = new JPanel(new GridLayout(2,2));
+            JPanel p = new JPanel(new GridLayout(2,2, 5, 5));
             JTextField userField = new JTextField();
             JPasswordField passField = new JPasswordField();
-            p.add(new JLabel("Użytkownik:"));
-            p.add(userField);
-            p.add(new JLabel("Hasło:"));
-            p.add(passField);
+            p.add(new JLabel("Użytkownik:")); p.add(userField);
+            p.add(new JLabel("Hasło:")); p.add(passField);
 
             int result = JOptionPane.showConfirmDialog(frame, p, "Rejestracja", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
@@ -102,74 +120,198 @@ public class MainClient {
                 String pass = new String(passField.getPassword());
                 String reply = sendCommand("REGISTER;" + user + ";" + pass);
                 if ("REGISTER_OK".equals(reply)) {
-                    JOptionPane.showMessageDialog(frame, "Zarejestrowano");
+                    JOptionPane.showMessageDialog(frame, "Zarejestrowano pomyślnie!");
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Rejestracja nie powiodła się");
+                    JOptionPane.showMessageDialog(frame, "Rejestracja nie powiodła się", "Błąd", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        moviesBtn.addActionListener(e -> {
-            showMoviesWindow(frame);
+        moviesBtn.addActionListener(e -> showMoviesWindow(frame));
+
+        return frame;
+    }
+
+    // --- GUI: PANEL UŻYTKOWNIKA ---
+
+    private static JFrame buildDashboardFrame(JFrame mainFrame) {
+        JFrame frame = new JFrame("Panel użytkownika");
+        frame.setSize(600, 600);
+        frame.setLocationRelativeTo(mainFrame);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        DarkGradientPanel bgPanel = new DarkGradientPanel();
+        bgPanel.setLayout(new GridBagLayout());
+        frame.setContentPane(bgPanel);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
+
+        JLabel title = new JLabel("Panel Klienta");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        title.setForeground(Color.WHITE);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        contentPanel.add(title);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        JButton moviesBtn = createModernButton("Lista Filmów", new Color(41, 128, 185));
+        JButton rentBtn = createModernButton("Wypożycz film", new Color(41, 128, 185));
+        JButton myRentsBtn = createModernButton("Moje wypożyczenia", new Color(39, 174, 96)); // Zielony
+        JButton myTransBtn = createModernButton("Moje transakcje / opłaty", new Color(211, 84, 0)); // Pomarańczowy
+        JButton payAndReturnBtn = createModernButton("Zapłać i zwróć film", new Color(192, 57, 43)); // Czerwony (akcja ważna)
+        JButton logoutBtn = createModernButton("Wyloguj", new Color(90, 90, 90));
+
+        for (JComponent c : new JComponent[]{moviesBtn, rentBtn, myRentsBtn, myTransBtn, payAndReturnBtn, new JSeparator(), logoutBtn}) {
+            c.setAlignmentX(Component.CENTER_ALIGNMENT);
+            if (c instanceof JButton) {
+                contentPanel.add(c);
+                contentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+            } else {
+                c.setMaximumSize(new Dimension(250, 10));
+                c.setBackground(new Color(255,255,255,50));
+                contentPanel.add(c);
+                contentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+            }
+        }
+
+        bgPanel.add(contentPanel);
+
+        // --- LOGIKA ---
+
+        moviesBtn.addActionListener(e -> showMoviesWindow(frame));
+
+        rentBtn.addActionListener(e -> {
+            List<String> lines = sendCommandLines("GET_FILMS");
+            if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia"); return; }
+
+            List<String> available = new ArrayList<>();
+            Pattern idPattern = Pattern.compile("^(\\d+)\\.");
+            for (String l : lines) {
+                // POPRAWKA: Teraz szukamy "Dostępny: Tak" (dzięki zmianie w FilmRepository)
+                if (l.contains("Dostępny: Tak") || l.contains("Dostepny: Tak")) {
+                    Matcher m = idPattern.matcher(l);
+                    if (m.find()) available.add(m.group(1) + " - " + l.substring(l.indexOf(".") + 1).trim());
+                }
+            }
+
+            if (available.isEmpty()) { JOptionPane.showMessageDialog(frame, "Brak dostępnych filmów."); return; }
+
+            String selected = (String) JOptionPane.showInputDialog(frame, "Wybierz film:", "Wypożycz", JOptionPane.PLAIN_MESSAGE, null, available.toArray(), available.get(0));
+            if (selected == null) return;
+
+            try {
+                int filmId = Integer.parseInt(selected.split("\\s*-\\s*", 2)[0].trim());
+                String reply = sendCommand("RENT;" + filmId + ";" + loggedUserId);
+                JOptionPane.showMessageDialog(frame, reply);
+            } catch (Exception ex) { JOptionPane.showMessageDialog(frame, "Błąd przetwarzania"); }
+        });
+
+        myRentsBtn.addActionListener(e -> showListWindow(frame, "Moje wypożyczenia", "MY_RENTS;" + loggedUserId));
+        myTransBtn.addActionListener(e -> showListWindow(frame, "Moje opłaty", "MY_TRANS;" + loggedUserId));
+
+        payAndReturnBtn.addActionListener(e -> {
+            List<String> lines = sendCommandLines("MY_TRANS;" + loggedUserId);
+            if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia"); return; }
+
+            List<String> unpaid = new ArrayList<>();
+            // Regex bez zmian (kwoty i opłaty)
+            Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
+
+            for (String l : lines) {
+                Matcher m = p.matcher(l);
+                if (m.find() && "NIE".equalsIgnoreCase(m.group(4))) {
+                    unpaid.add("Opłata ID: " + m.group(1) + " | Kwota: " + m.group(2) + " zł | Za: " + m.group(3));
+                }
+            }
+
+            if (unpaid.isEmpty()) { JOptionPane.showMessageDialog(frame, "Brak opłat do uregulowania."); return; }
+
+            String selected = (String) JOptionPane.showInputDialog(frame, "Wybierz rachunek (spowoduje zwrot filmu):", "Zapłać i zwróć", JOptionPane.QUESTION_MESSAGE, null, unpaid.toArray(), unpaid.get(0));
+            if (selected == null) return;
+
+            Matcher mId = Pattern.compile("ID:\\s*(\\d+)").matcher(selected);
+            if (mId.find()) {
+                String reply = sendCommand("PAY;" + mId.group(1) + ";0.0;" + loggedUserId);
+                JOptionPane.showMessageDialog(frame, reply);
+            }
+        });
+
+        logoutBtn.addActionListener(e -> {
+            loggedUserId = -1;
+            frame.dispose();
+            mainFrame.setVisible(true);
+        });
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) { mainFrame.setVisible(true); }
         });
 
         return frame;
     }
 
-    // --- PANEL ADMINA ---
     private static JFrame buildAdminFrame(JFrame mainFrame) {
-        JFrame frame = new JFrame("PANEL ADMINISTRATORA");
-        frame.setSize(600, 400);
+        JFrame frame = new JFrame("Panel Administratora");
+        frame.setSize(700, 500);
         frame.setLocationRelativeTo(mainFrame);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new BorderLayout());
+        DarkGradientPanel bgPanel = new DarkGradientPanel();
+        bgPanel.setLayout(new BorderLayout());
+        frame.setContentPane(bgPanel);
 
-        JLabel header = new JLabel("Zarządzanie użytkownikami", SwingConstants.CENTER);
-        header.setFont(new Font("Arial", Font.BOLD, 18));
-        header.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        panel.add(header, BorderLayout.NORTH);
+        JPanel headerPanel = new JPanel();
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(20,0,20,0));
+        JLabel header = new JLabel("Zarządzanie Użytkownikami");
+        header.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        header.setForeground(Color.WHITE);
+        headerPanel.add(header);
+        bgPanel.add(headerPanel, BorderLayout.NORTH);
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
         JList<String> userList = new JList<>(listModel);
-        panel.add(new JScrollPane(userList), BorderLayout.CENTER);
+        userList.setFont(new Font("Consolas", Font.PLAIN, 14));
+
+        JPanel listWrapper = new JPanel(new BorderLayout());
+        listWrapper.setOpaque(false);
+        listWrapper.setBorder(new EmptyBorder(0, 40, 0, 40));
+        listWrapper.add(new JScrollPane(userList), BorderLayout.CENTER);
+        bgPanel.add(listWrapper, BorderLayout.CENTER);
 
         JPanel btnPanel = new JPanel();
-        JButton refreshBtn = new JButton("Odśwież");
-        JButton deleteBtn = new JButton("Usuń użytkownika");
-        JButton passBtn = new JButton("Zmień hasło");
-        JButton logoutBtn = new JButton("Wyloguj");
+        btnPanel.setOpaque(false);
+        btnPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        JButton refreshBtn = createModernButton("Odśwież", new Color(41, 128, 185));
+        JButton deleteBtn = createModernButton("Usuń użytkownika", new Color(192, 57, 43));
+        JButton passBtn = createModernButton("Zmień hasło", new Color(243, 156, 18));
+        JButton logoutBtn = createModernButton("Wyloguj", new Color(90, 90, 90));
+
         btnPanel.add(refreshBtn);
         btnPanel.add(deleteBtn);
         btnPanel.add(passBtn);
         btnPanel.add(logoutBtn);
-        panel.add(btnPanel, BorderLayout.SOUTH);
+        bgPanel.add(btnPanel, BorderLayout.SOUTH);
 
-        // Funkcja odświeżania listy
         Runnable refreshAction = () -> {
             listModel.clear();
             List<String> lines = sendCommandLines("ADMIN_GET_USERS");
-            if (lines != null) {
-                for (String l : lines) listModel.addElement(l);
-            }
+            if (lines != null) for (String l : lines) listModel.addElement(l);
         };
 
         refreshBtn.addActionListener(e -> refreshAction.run());
-
-        // Pobierz listę na starcie
         refreshAction.run();
 
         deleteBtn.addActionListener(e -> {
             String selected = userList.getSelectedValue();
             if (selected == null) { JOptionPane.showMessageDialog(frame, "Wybierz użytkownika"); return; }
-
-            // Parsowanie ID: "ID: 5 | Login: ..."
             String idStr = selected.split("\\|")[0].replace("ID:", "").trim();
-
-            int confirm = JOptionPane.showConfirmDialog(frame, "Czy na pewno usunąć użytkownika ID " + idStr + "?\nZostaną usunięte też jego transakcje!", "Potwierdź", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                String reply = sendCommand("ADMIN_DEL_USER;" + idStr);
-                JOptionPane.showMessageDialog(frame, reply);
+            if (JOptionPane.showConfirmDialog(frame, "Usunąć użytkownika ID " + idStr + "?", "Potwierdź", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog(frame, sendCommand("ADMIN_DEL_USER;" + idStr));
                 refreshAction.run();
             }
         });
@@ -178,11 +320,9 @@ public class MainClient {
             String selected = userList.getSelectedValue();
             if (selected == null) { JOptionPane.showMessageDialog(frame, "Wybierz użytkownika"); return; }
             String idStr = selected.split("\\|")[0].replace("ID:", "").trim();
-
-            String newPass = JOptionPane.showInputDialog(frame, "Podaj nowe hasło:");
+            String newPass = JOptionPane.showInputDialog(frame, "Nowe hasło:");
             if (newPass != null && !newPass.isBlank()) {
-                String reply = sendCommand("ADMIN_PASS;" + idStr + ";" + newPass);
-                JOptionPane.showMessageDialog(frame, reply);
+                JOptionPane.showMessageDialog(frame, sendCommand("ADMIN_PASS;" + idStr + ";" + newPass));
             }
         });
 
@@ -194,224 +334,125 @@ public class MainClient {
 
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                mainFrame.setVisible(true);
-            }
+            public void windowClosed(java.awt.event.WindowEvent e) { mainFrame.setVisible(true); }
         });
 
-        frame.add(panel);
         return frame;
     }
 
-    // --- PANEL ZWYKŁEGO UŻYTKOWNIKA ---
-    private static JFrame buildDashboardFrame(JFrame mainFrame) {
-        JFrame frame = new JFrame("Panel użytkownika - ID: " + loggedUserId);
-        frame.setSize(520, 420);
-        frame.setLocationRelativeTo(mainFrame);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    // --- CUSTOM SWING COMPONENTS (NOWOCZESNE) ---
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    static class DarkGradientPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            // Elegancki ciemny gradient
+            GradientPaint gp = new GradientPaint(0, 0, new Color(43, 50, 58), 0, getHeight(), new Color(20, 20, 20));
+            g2d.setPaint(gp);
+            g2d.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
 
-        JLabel title = new JLabel("Panel użytkownika");
-        title.setFont(new Font("Arial", Font.BOLD, 20));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setBorder(BorderFactory.createEmptyBorder(20,0,20,0));
-        panel.add(title);
+    // Nowy przycisk z efektem szkła/glossy
+    static class ModernButton extends JButton {
+        private Color baseColor;
+        private boolean isHovered = false;
 
-        JButton moviesBtn = new JButton("Lista Filmów");
-        JButton rentBtn = new JButton("Wypożycz film");
-        JButton myRentsBtn = new JButton("Moje wypożyczenia");
-        JButton myTransBtn = new JButton("Moje transakcje / opłaty");
-        JButton payAndReturnBtn = new JButton("Zapłać i zwróć film");
-        JButton logoutBtn = new JButton("Wyloguj");
+        public ModernButton(String text, Color color) {
+            super(text);
+            this.baseColor = color;
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+            setForeground(Color.WHITE);
+            setFont(MAIN_FONT);
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        for (JComponent c : new JComponent[]{moviesBtn, rentBtn, myRentsBtn, myTransBtn, payAndReturnBtn, logoutBtn}) {
-            c.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(c);
-            panel.add(Box.createRigidArea(new Dimension(0,8)));
+            // Ustawiamy preferowany rozmiar, żeby nie były takie długie
+            Dimension size = new Dimension(260, 45);
+            setPreferredSize(size);
+            setMaximumSize(size);
+            setMinimumSize(size);
+
+            addMouseListener(new MouseAdapter() {
+                @Override public void mouseEntered(MouseEvent e) { isHovered = true; repaint(); }
+                @Override public void mouseExited(MouseEvent e) { isHovered = false; repaint(); }
+            });
         }
 
-        frame.add(panel);
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        moviesBtn.addActionListener(e -> showMoviesWindow(frame));
+            int w = getWidth();
+            int h = getHeight();
 
-        rentBtn.addActionListener(e -> {
-            if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
+            // Kolor bazowy (jaśniejszy po najechaniu)
+            Color c = isHovered ? baseColor.brighter() : baseColor;
 
-            List<String> lines = sendCommandLines("GET_FILMS");
-            if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia z serwerem"); return; }
+            // Gradient "wypukłości" (góra jaśniejsza, dół ciemniejszy)
+            GradientPaint gp = new GradientPaint(0, 0, c.brighter(), 0, h, c.darker());
+            g2.setPaint(gp);
+            g2.fillRoundRect(0, 0, w, h, 15, 15); // Zaokrąglone rogi (radius 15)
 
-            List<String> available = new ArrayList<>();
-            Pattern idPattern = Pattern.compile("^(\\d+)\\.");
-            for (String l : lines) {
-                if (l.contains("Dostępny: true") || l.contains("Dostepny: true")) {
-                    Matcher m = idPattern.matcher(l);
-                    if (m.find()) {
-                        String id = m.group(1);
-                        String display = id + " - " + l.substring(l.indexOf(".") + 1).trim();
-                        available.add(display);
-                    }
-                }
-            }
+            // Efekt "szkła" na górnej połowie (biały półprzezroczysty)
+            g2.setPaint(new GradientPaint(0, 0, new Color(255,255,255, 80), 0, h/2, new Color(255,255,255, 10)));
+            g2.fillRoundRect(0, 0, w, h/2, 15, 15);
 
-            if (available.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Brak dostępnych filmów do wypożyczenia.");
-                return;
-            }
+            // Cień (Border)
+            g2.setColor(new Color(0,0,0, 50));
+            g2.drawRoundRect(0, 0, w-1, h-1, 15, 15);
 
-            JComboBox<String> combo = new JComboBox<>(available.toArray(new String[0]));
-            int res = JOptionPane.showConfirmDialog(frame, combo, "Wybierz film do wypożyczenia", JOptionPane.OK_CANCEL_OPTION);
-            if (res != JOptionPane.OK_OPTION) return;
+            g2.dispose();
+            super.paintComponent(g); // Rysuje tekst
+        }
+    }
 
-            String selected = (String) combo.getSelectedItem();
-            if (selected == null) return;
-            int filmId;
-            try {
-                filmId = Integer.parseInt(selected.split("\\s*-\\s*", 2)[0].trim());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Błąd parsowania id filmu");
-                return;
-            }
-
-            String reply = sendCommand("RENT;" + filmId + ";" + loggedUserId);
-            JOptionPane.showMessageDialog(frame, "Serwer: " + reply);
-        });
-
-        myRentsBtn.addActionListener(e -> {
-            if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
-            JFrame f = new JFrame("Moje wypożyczenia");
-            f.setSize(500, 300);
-            f.setLocationRelativeTo(frame);
-            JTextArea ta = new JTextArea(); ta.setEditable(false);
-            f.add(new JScrollPane(ta));
-            f.setVisible(true);
-
-            List<String> lines = sendCommandLines("MY_RENTS;" + loggedUserId);
-            if (lines == null) {
-                ta.setText("Błąd połączenia z serwerem");
-            } else if (lines.isEmpty()) {
-                ta.setText("Brak wypożyczeń.");
-            } else {
-                for (String l : lines) ta.append(l + "\n");
-            }
-        });
-
-        myTransBtn.addActionListener(e -> {
-            if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
-            JFrame f = new JFrame("Moje transakcje / opłaty");
-            f.setSize(500, 300);
-            f.setLocationRelativeTo(frame);
-            JTextArea ta = new JTextArea(); ta.setEditable(false);
-            f.add(new JScrollPane(ta));
-            f.setVisible(true);
-
-            List<String> lines = sendCommandLines("MY_TRANS;" + loggedUserId);
-            if (lines == null) {
-                ta.setText("Błąd połączenia z serwerem");
-            } else if (lines.isEmpty()) {
-                ta.setText("Brak transakcji / opłat.");
-            } else {
-                for (String l : lines) ta.append(l + "\n");
-            }
-        });
-
-        payAndReturnBtn.addActionListener(e -> {
-            if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
-
-            List<String> lines = sendCommandLines("MY_TRANS;" + loggedUserId);
-            if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia z serwerem"); return; }
-
-            List<String> unpaid = new ArrayList<>();
-            Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
-
-            for (String l : lines) {
-                Matcher m = p.matcher(l);
-                if (m.find()) {
-                    String status = m.group(4);
-                    if ("NIE".equalsIgnoreCase(status)) {
-                        String item = "Opłata ID: " + m.group(1) + " | Kwota: " + m.group(2) + " zł | Za: " + m.group(3);
-                        unpaid.add(item);
-                    }
-                }
-            }
-
-            if (unpaid.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Brak opłat do uregulowania (Wszystkie filmy zwrócone i opłacone).");
-                return;
-            }
-
-            JComboBox<String> combo = new JComboBox<>(unpaid.toArray(new String[0]));
-            int res = JOptionPane.showConfirmDialog(frame, combo, "Wybierz rachunek do opłacenia (Spowoduje zwrot filmu)", JOptionPane.OK_CANCEL_OPTION);
-            if (res != JOptionPane.OK_OPTION) return;
-
-            String selected = (String) combo.getSelectedItem();
-            if (selected == null) return;
-
-            Pattern idExtract = Pattern.compile("ID:\\s*(\\d+)");
-            Matcher mId = idExtract.matcher(selected);
-            int oplataId = -1;
-            if (mId.find()) {
-                oplataId = Integer.parseInt(mId.group(1));
-            } else {
-                JOptionPane.showMessageDialog(frame, "Błąd parsowania ID opłaty");
-                return;
-            }
-
-            double kwota = 0.0;
-            String reply = sendCommand("PAY;" + oplataId + ";" + kwota + ";" + loggedUserId);
-            JOptionPane.showMessageDialog(frame, "Serwer: " + reply);
-        });
-
-        logoutBtn.addActionListener(e -> {
-            loggedUserId = -1;
-            frame.dispose();
-            mainFrame.setVisible(true);
-        });
-
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                mainFrame.setVisible(true);
-            }
-        });
-
-        return frame;
+    private static JButton createModernButton(String text, Color color) {
+        return new ModernButton(text, color);
     }
 
     private static void showMoviesWindow(JFrame parent) {
-        JFrame moviesFrame = new JFrame("Lista Filmów");
-        moviesFrame.setSize(500, 300);
-        moviesFrame.setLocationRelativeTo(parent);
+        showListWindow(parent, "Lista Filmów", "GET_FILMS");
+    }
+
+    private static void showListWindow(JFrame parent, String title, String command) {
+        JFrame listFrame = new JFrame(title);
+        listFrame.setSize(500, 400);
+        listFrame.setLocationRelativeTo(parent);
+
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
-        moviesFrame.add(new JScrollPane(textArea));
-        moviesFrame.setVisible(true);
+        textArea.setFont(new Font("Consolas", Font.PLAIN, 14));
+        textArea.setMargin(new Insets(10,10,10,10));
 
-        List<String> lines = sendCommandLines("GET_FILMS");
+        listFrame.add(new JScrollPane(textArea));
+        listFrame.setVisible(true);
+
+        List<String> lines = sendCommandLines(command);
         if (lines == null) textArea.setText("Błąd połączenia z serwerem");
         else for (String l : lines) textArea.append(l + "\n");
     }
 
+    // --- KOMUNIKACJA ---
+
     private static String sendCommand(String cmd) {
         try (Socket socket = new Socket(HOST, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-        ) {
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             out.println(cmd);
             return in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        } catch (IOException e) { return null; }
     }
 
     private static List<String> sendCommandLines(String cmd) {
         List<String> result = new ArrayList<>();
         try (Socket socket = new Socket(HOST, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-        ) {
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             out.println(cmd);
             String line;
             while ((line = in.readLine()) != null) {
@@ -419,9 +460,6 @@ public class MainClient {
                 result.add(line);
             }
             return result;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        } catch (IOException e) { return null; }
     }
 }

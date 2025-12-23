@@ -12,7 +12,7 @@ public class FilmRepository {
 
     public List<String> getAllFilmsFormatted() {
         List<String> result = new ArrayList<>();
-        // Twoja tabela nazywa się Film
+        // Upewnij się, że nazwy kolumn pasują do Twojej bazy (np. gatunek)
         String sql = "SELECT id, tytul, rok, gatunek, dostepny FROM Film";
 
         try (Connection conn = Database.connect();
@@ -25,7 +25,11 @@ public class FilmRepository {
                 int rok = rs.getInt("rok");
                 boolean dostepny = rs.getBoolean("dostepny");
 
-                String line = String.format("%d. %s (%d) - Dostępny: %b", id, tytul, rok, dostepny);
+                // --- ZMIANA TUTAJ: Tłumaczenie boolean na polski ---
+                String dostepnoscTekst = dostepny ? "Tak" : "Nie";
+
+                // Format: "1. Matrix (1999) - Dostępny: Tak"
+                String line = String.format("%d. %s (%d) - Dostępny: %s", id, tytul, rok, dostepnoscTekst);
                 result.add(line);
             }
             logger.info("Pobrano filmy z bazy.");

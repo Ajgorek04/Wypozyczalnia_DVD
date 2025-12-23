@@ -142,3 +142,45 @@
 2025-12-23 16:24:06 [Thread-12] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
 2025-12-23 16:24:09 [Thread-13] INFO  server.ServerApp - [Komenda] LOGIN;aha;aha
 2025-12-23 16:24:13 [Thread-14] INFO  server.ServerApp - [Komenda] LOGIN;aha;123
+2025-12-23 16:28:14 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:28:14 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (ADMIN ENABLED)
+2025-12-23 16:28:14 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-23 16:28:14 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:28:23 [Thread-0] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:28:23 [Thread-0] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:28:27 [Thread-1] INFO  server.ServerApp - [Komenda] LOGIN;admin;admin
+2025-12-23 16:28:27 [Thread-2] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
+2025-12-23 16:28:34 [Thread-3] INFO  server.ServerApp - [Komenda] LOGIN;u;u
+2025-12-23 16:28:35 [Thread-4] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:28:35 [Thread-4] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:28:36 [Thread-5] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:28:36 [Thread-5] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:28:38 [Thread-6] INFO  server.ServerApp - [Komenda] MY_RENTS;1
+2025-12-23 16:28:40 [Thread-7] INFO  server.ServerApp - [Komenda] MY_TRANS;1
+2025-12-23 16:28:41 [Thread-8] INFO  server.ServerApp - [Komenda] MY_TRANS;1
+2025-12-23 16:31:37 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:31:37 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (ADMIN ENABLED)
+2025-12-23 16:31:37 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-23 16:31:37 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:31:49 [Thread-0] INFO  server.ServerApp - [Komenda] LOGIN;u;u
+2025-12-23 16:33:49 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:33:49 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (ADMIN ENABLED)
+2025-12-23 16:33:49 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-23 16:33:49 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:33:55 [Thread-0] INFO  server.ServerApp - [Komenda] LOGIN;u;u
+2025-12-23 16:33:56 [Thread-1] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:33:56 [Thread-1] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:33:57 [Thread-2] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:33:57 [Thread-2] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:33:59 [Thread-3] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:33:59 [Thread-3] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:34:00 [Thread-4] INFO  server.ServerApp - [Komenda] MY_TRANS;1
+2025-12-23 16:34:02 [Thread-5] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:34:02 [Thread-5] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:34:38 [Thread-6] INFO  server.ServerApp - [Komenda] LOGIN;u;u
+2025-12-23 16:34:39 [Thread-7] INFO  server.ServerApp - [Komenda] GET_FILMS
+2025-12-23 16:34:39 [Thread-7] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-23 16:34:41 [Thread-8] INFO  server.ServerApp - [Komenda] MY_RENTS;1
+2025-12-23 16:34:43 [Thread-9] INFO  server.ServerApp - [Komenda] MY_TRANS;1
+2025-12-23 16:34:46 [Thread-10] INFO  server.ServerApp - [Komenda] MY_RENTS;1
+2025-12-23 16:34:48 [Thread-11] INFO  server.ServerApp - [Komenda] MY_TRANS;1

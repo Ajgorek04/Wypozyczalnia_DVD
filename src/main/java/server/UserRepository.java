@@ -12,7 +12,6 @@ import java.util.List;
 public class UserRepository {
     private static final Logger logger = LogManager.getLogger(UserRepository.class);
 
-    // --- REJESTRACJA I LOGOWANIE (Bez zmian) ---
 
     public boolean registerUser(String username, String password) {
         if (username == null || password == null || username.isBlank() || password.isBlank()) {
@@ -77,7 +76,6 @@ public class UserRepository {
         }
     }
 
-    // --- NOWE METODY DLA ADMINA ---
 
     public List<String> getAllUsers() {
         List<String> users = new ArrayList<>();
@@ -98,23 +96,19 @@ public class UserRepository {
         Connection conn = Database.connect();
         if (conn == null) return false;
         try {
-            conn.setAutoCommit(false); // Transakcja - usuwamy wszystko albo nic
+            conn.setAutoCommit(false);
 
-            // 1. Usuń Opłaty tego klienta (poprzez Transakcje)
             String delOplaty = "DELETE o FROM Oplata o JOIN Transakcja t ON o.transakcja_id = t.id WHERE t.klient_id = ?";
             try (PreparedStatement ps = conn.prepareStatement(delOplaty)) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 2. Usuń Rachunki
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Rachunek WHERE klient_id = ?")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 3. Usuń Transakcje (Wypożyczenia) - UWAGA: Filmy mogą zostać zablokowane, jeśli są wypożyczone!
-            // Najpierw odblokujmy filmy, które klient aktualnie trzyma
             try (PreparedStatement ps = conn.prepareStatement("UPDATE Film SET dostepny=1 WHERE id IN (SELECT film_id FROM Transakcja WHERE klient_id=? AND dataZwrotu IS NULL)")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
@@ -125,13 +119,11 @@ public class UserRepository {
                 ps.executeUpdate();
             }
 
-            // 4. Usuń z tabeli Klient
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Klient WHERE id = ?")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 5. Usuń z tabeli Uzytkownik
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Uzytkownik WHERE id = ?")) {
                 ps.setInt(1, userId);
                 int rows = ps.executeUpdate();

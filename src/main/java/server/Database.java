@@ -10,10 +10,9 @@ import java.sql.SQLException;
 public class Database {
     private static final Logger logger = LogManager.getLogger(Database.class);
 
-    // USUNIĘTO słowo 'final', aby można było je zmienić w testach
     private static String URL = "jdbc:mysql://localhost:3306/WypozyczalniaPlytDVD";
     private static String USER = "root";
-    private static String PASSWORD = ""; // <-- Twoje hasło
+    private static String PASSWORD = "";
 
     public static Connection connect() {
         try {
@@ -26,7 +25,6 @@ public class Database {
         }
     }
 
-    // Nowa metoda specjalnie dla testów
     public static void setConnectionDetails(String url, String user, String password) {
         URL = url;
         USER = user;
