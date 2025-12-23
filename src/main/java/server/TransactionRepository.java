@@ -10,12 +10,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Repozytorium obsługujące logikę biznesową transakcji, wypożyczeń i płatności.
+ * <p>
+ * Odpowiada za cały cykl życia wypożyczenia: od rezerwacji filmu (rentFilm),
+ * poprzez naliczanie opłat w czasie rzeczywistym, aż po finalizację transakcji (płatność i zwrot).
+ * </p>
+ *
+ * @author Twój Zespół
+ * @version 2.0
+ */
 public class TransactionRepository {
     private static final Logger logger = LogManager.getLogger(TransactionRepository.class);
 
+    /** Stała opłata początkowa naliczana w momencie wypożyczenia filmu. */
     private static final double OPLATA_STARTOWA = 10.00;
+    /** Stawka za każdą rozpoczętą minutę wypożyczenia. */
     private static final double STAWKA_ZA_MINUTE = 1.50;
 
+    /**
+     * Domyślny konstruktor.
+     */
+    public TransactionRepository() {
+    }
+
+    /**
+     * Realizuje proces wypożyczenia filmu.
+     *
+     * <br>Metoda wykonuje szereg operacji w jednej transakcji bazodanowej:
+     * <ol>
+     * <li>Sprawdza dostępność filmu i blokuje go (FOR UPDATE).</li>
+     * <li>Tworzy wpis w tabeli Transakcja.</li>
+     * <li>Zmienia status filmu na niedostępny.</li>
+     * <li>Tworzy początkowy wpis w tabeli Oplata (kwota startowa).</li>
+     * </ol>
+     *
+     * @param userId ID użytkownika wypożyczającego film.
+     * @param filmId ID filmu do wypożyczenia.
+     * @return Komunikat tekstowy dla klienta (sukces lub błąd).
+     */
     public String rentFilm(int userId, int filmId) {
         Connection conn = Database.connect();
         if (conn == null) return "Błąd połączenia z bazą";
@@ -72,6 +105,17 @@ public class TransactionRepository {
         }
     }
 
+    /**
+     * Sprawdza status zwrotu filmu.
+     * <p>
+     * Uwaga: W tym systemie fizyczny zwrot filmu następuje automatycznie w momencie opłacenia należności.
+     * Ta metoda służy jedynie do poinformowania użytkownika, że musi dokonać płatności, aby zwrócić film.
+     * </p>
+     *
+     * @param userId ID użytkownika.
+     * @param filmId ID filmu.
+     * @return Informacja dla klienta (np. o konieczności zapłaty).
+     */
     public String returnFilm(int userId, int filmId) {
         Connection conn = Database.connect();
         try {
@@ -92,6 +136,16 @@ public class TransactionRepository {
         }
     }
 
+    /**
+     * Pobiera listę transakcji (opłat) użytkownika.
+     * <p>
+     * Metoda dynamicznie oblicza bieżącą kwotę do zapłaty dla aktywnych wypożyczeń.
+     * Do kwoty startowej doliczana jest opłata za czas (minuty), który upłynął od momentu wypożyczenia do teraz.
+     * </p>
+     *
+     * @param userId ID użytkownika.
+     * @return Lista sformatowanych ciągów znaków opisujących opłaty.
+     */
     public List<String> getUserTransactions(int userId) {
         List<String> list = new ArrayList<>();
         String sql = "SELECT o.id, o.kwota, o.powod, o.rachunek_id, t.dataWypozyczenia, t.dataZwrotu " +
@@ -133,6 +187,21 @@ public class TransactionRepository {
         return list;
     }
 
+    /**
+     * Realizuje płatność za wypożyczenie i automatycznie zwraca film.
+     *
+     * <br>Jest to najważniejsza metoda kończąca cykl wypożyczenia.
+     * <ol>
+     * <li>Blokuje rekord opłaty do edycji.</li>
+     * <li>Oblicza finalną kwotę (Start + Czas rzeczywisty).</li>
+     * <li>Zamyka transakcję (ustawia dataZwrotu).</li>
+     * <li>Odblokowuje film (ustawia dostepny=1).</li>
+     * <li>Generuje Rachunek i aktualizuje status Opłaty na opłaconą.</li>
+     * </ol>
+     *
+     * @param oplataId ID opłaty do uregulowania.
+     * @return Komunikat o sukcesie (z kwotą) lub błędzie.
+     */
     public String payTransaction(int oplataId) {
         Connection conn = Database.connect();
         if (conn == null) return "Błąd połączenia";
@@ -228,6 +297,12 @@ public class TransactionRepository {
         }
     }
 
+    /**
+     * Pobiera historię wypożyczeń użytkownika (zarówno aktywne, jak i zwrócone).
+     *
+     * @param userId ID użytkownika.
+     * @return Lista wypożyczeń w formacie tekstowym.
+     */
     public List<String> getUserRentals(int userId) {
         List<String> list = new ArrayList<>();
         String sql = "SELECT f.id, f.tytul, t.dataWypozyczenia, t.dataZwrotu " +

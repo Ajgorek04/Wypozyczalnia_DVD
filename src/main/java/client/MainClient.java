@@ -14,16 +14,47 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Główna klasa aplikacji klienckiej (Frontend) oparta na bibliotece Swing.
+ * <p>
+ * Klasa ta odpowiada za:
+ * </p>
+ * <ul>
+ * <li>Wyświetlanie interfejsu graficznego (Logowanie, Panel Użytkownika, Panel Admina).</li>
+ * <li>Obsługę zdarzeń (kliknięcia przycisków).</li>
+ * <li>Komunikację z serwerem poprzez gniazda sieciowe (Socket).</li>
+ * </ul>
+ *
+ * @author Igor Błędziński, Łukasz Gierczak
+ * @version 1.0
+ */
 public class MainClient {
 
+    /** Przechowuje ID zalogowanego użytkownika (-1 oznacza brak logowania). */
     private static int loggedUserId = -1;
+    /** Port serwera. */
     private static final int PORT = 5000;
+    /** Adres IP serwera. */
     private static final String HOST = "127.0.0.1";
 
-    // Czcionka i kolory
+    /** Główna czcionka aplikacji. */
     private static final Font MAIN_FONT = new Font("Segoe UI", Font.BOLD, 14);
+    /** Domyślny kolor tekstu na przyciskach. */
     private static final Color TEXT_COLOR = Color.WHITE;
 
+    /**
+     * Prywatny konstruktor zapobiegający instancjalizacji klasy narzędziowej.
+     */
+    private MainClient() {
+        throw new IllegalStateException("Klasa narzędziowa");
+    }
+
+    /**
+     * Punkt wejścia aplikacji klienckiej.
+     * Ustawia systemowy wygląd okien (LookAndFeel) i uruchamia główne okno w wątku Swing (EDT).
+     *
+     * @param args Argumenty wiersza poleceń (nieużywane).
+     */
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -37,6 +68,12 @@ public class MainClient {
 
     // --- GUI: OKNO GŁÓWNE (LOGOWANIE) ---
 
+    /**
+     * Buduje główne okno aplikacji (Ekran startowy / Logowanie).
+     * Zawiera przyciski do logowania, rejestracji i przeglądania filmów jako gość.
+     *
+     * @return Skonfigurowany obiekt JFrame ekranu startowego.
+     */
     private static JFrame buildMainFrame() {
         JFrame frame = new JFrame("Wypożyczalnia DVD - Witaj");
         frame.setSize(550, 550);
@@ -136,6 +173,14 @@ public class MainClient {
 
     // --- GUI: PANEL UŻYTKOWNIKA ---
 
+    /**
+     * Buduje panel użytkownika (Dashboard).
+     * Wyświetlany po poprawnym zalogowaniu standardowego klienta.
+     * Umożliwia dostęp do funkcji takich jak: Wypożycz, Zwróć, Moje Opłaty.
+     *
+     * @param mainFrame Referencja do głównego okna (aby móc do niego wrócić przy wylogowaniu).
+     * @return Skonfigurowany obiekt JFrame panelu użytkownika.
+     */
     private static JFrame buildDashboardFrame(JFrame mainFrame) {
         JFrame frame = new JFrame("Panel użytkownika");
         frame.setSize(600, 600);
@@ -253,11 +298,18 @@ public class MainClient {
         return frame;
     }
 
-    // --- GUI: PANEL ADMINISTRATORA (POPRAWIONY) ---
+    // --- GUI: PANEL ADMINISTRATORA (POPRAWIONY UKŁAD) ---
 
+    /**
+     * Buduje panel administratora.
+     * Uruchamiany tylko, gdy login to "admin". Umożliwia zarządzanie użytkownikami.
+     *
+     * @param mainFrame Referencja do głównego okna.
+     * @return Skonfigurowany obiekt JFrame panelu admina.
+     */
     private static JFrame buildAdminFrame(JFrame mainFrame) {
         JFrame frame = new JFrame("Panel Administratora");
-        // ZWIĘKSZONA WYSOKOŚĆ, żeby przyciski się nie ucinały
+        // FIX: Zwiększona wysokość, żeby przyciski się nie ucinały
         frame.setSize(700, 600);
         frame.setLocationRelativeTo(mainFrame);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -285,12 +337,10 @@ public class MainClient {
         listWrapper.add(new JScrollPane(userList), BorderLayout.CENTER);
         bgPanel.add(listWrapper, BorderLayout.CENTER);
 
-        // --- ZMIANA: GRID LAYOUT DLA PRZYCISKÓW ---
-        // Ustawiamy przyciski w siatce 2 wiersze x 2 kolumny, z odstępami 15px
-        // Dzięki temu nie będą znikać poza ekranem
+        // FIX: Grid Layout 2x2 dla przycisków, żeby się nie ucinały
         JPanel btnPanel = new JPanel(new GridLayout(2, 2, 15, 15));
         btnPanel.setOpaque(false);
-        btnPanel.setBorder(new EmptyBorder(20, 40, 30, 40)); // Margines od dołu i boków
+        btnPanel.setBorder(new EmptyBorder(20, 40, 30, 40));
 
         JButton refreshBtn = createModernButton("Odśwież", new Color(41, 128, 185));
         JButton deleteBtn = createModernButton("Usuń użytkownika", new Color(192, 57, 43));
@@ -348,6 +398,10 @@ public class MainClient {
 
     // --- CUSTOM SWING COMPONENTS ---
 
+    /**
+     * Niestandardowy panel z ciemnym gradientem w tle.
+     * Służy jako kontener (ContentPane) dla wszystkich okien aplikacji.
+     */
     static class DarkGradientPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
@@ -360,6 +414,10 @@ public class MainClient {
         }
     }
 
+    /**
+     * Nowoczesny przycisk z efektem szkła/gradientu i zaokrąglonymi rogami.
+     * Reaguje na najechanie myszką (hover).
+     */
     static class ModernButton extends JButton {
         private Color baseColor;
         private boolean isHovered = false;
@@ -407,10 +465,17 @@ public class MainClient {
             g2.drawRoundRect(0, 0, w-1, h-1, 15, 15);
 
             g2.dispose();
-            super.paintComponent(g);
+            super.paintComponent(g); // Rysowanie tekstu
         }
     }
 
+    /**
+     * Fabryka przycisków. Tworzy instancję ModernButton.
+     *
+     * @param text  Tekst na przycisku.
+     * @param color Kolor bazowy przycisku.
+     * @return Nowy obiekt JButton.
+     */
     private static JButton createModernButton(String text, Color color) {
         return new ModernButton(text, color);
     }
@@ -439,6 +504,13 @@ public class MainClient {
 
     // --- KOMUNIKACJA ---
 
+    /**
+     * Wysyła komendę do serwera i zwraca pojedynczą linię odpowiedzi.
+     * Używane np. przy logowaniu lub rejestracji.
+     *
+     * @param cmd Treść komendy (np. "LOGIN;user;pass").
+     * @return Pierwsza linia odpowiedzi serwera lub null w przypadku błędu.
+     */
     private static String sendCommand(String cmd) {
         try (Socket socket = new Socket(HOST, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -448,6 +520,14 @@ public class MainClient {
         } catch (IOException e) { return null; }
     }
 
+    /**
+     * Wysyła komendę do serwera i odbiera wielowierszową odpowiedź (listę).
+     * Używane np. do pobierania listy filmów.
+     * Czyta dane dopóki serwer nie wyśle "END".
+     *
+     * @param cmd Treść komendy (np. "GET_FILMS").
+     * @return Lista linii odpowiedzi lub null w przypadku błędu.
+     */
     private static List<String> sendCommandLines(String cmd) {
         List<String> result = new ArrayList<>();
         try (Socket socket = new Socket(HOST, PORT);

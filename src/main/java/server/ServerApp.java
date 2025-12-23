@@ -7,11 +7,43 @@ import java.io.*;
 import java.net.*;
 import java.util.List;
 
+/**
+ * Główna klasa serwera aplikacji Wypożyczalni DVD.
+ * <p>
+ * Serwer działa w modelu wielowątkowym. Główny wątek nasłuchuje na określonym porcie
+ * i dla każdego nowego połączenia klienta tworzy osobny wątek obsługi (instancję {@link ClientHandler}).
+ * </p>
+ *
+ * @author Twój Zespół
+ * @version 2.0
+ */
 public class ServerApp {
+
+    /** Logger log4j do rejestrowania zdarzeń serwera. */
     private static final Logger logger = LogManager.getLogger(ServerApp.class);
+
+    /** Port, na którym serwer nasłuchuje połączeń przychodzących (5000). */
     private static final int PORT = 5000;
 
+    /**
+     * Prywatny konstruktor zapobiegający instancjalizacji klasy narzędziowej.
+     */
+    private ServerApp() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    /**
+     * Punkt wejścia aplikacji serwerowej.
+     * <p>
+     * Metoda otwiera gniazdo serwera (ServerSocket) i wchodzi w nieskończoną pętlę,
+     * oczekując na połączenia od klientów. Każde zaakceptowane połączenie
+     * jest przekazywane do nowego wątku.
+     * </p>
+     *
+     * @param args Argumenty wiersza poleceń (nieużywane).
+     */
     public static void main(String[] args) {
+        // ... (reszta kodu bez zmian, tylko konstruktor dodany powyżej)
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             logger.info("========================================");
             logger.info(" Serwer Wypożyczalni DVD (ADMIN ENABLED)");
@@ -31,6 +63,10 @@ public class ServerApp {
         }
     }
 
+    // ... (Klasa ClientHandler pozostaje bez zmian)
+    /**
+     * Klasa wewnętrzna odpowiedzialna za obsługę pojedynczego klienta w osobnym wątku.
+     */
     private static class ClientHandler implements Runnable {
         private final Socket socket;
         private final UserRepository userRepo;
@@ -101,7 +137,6 @@ public class ServerApp {
                                 for (String r : rents) out.println(r);
                                 out.println("END");
                                 break;
-
 
                             case "ADMIN_GET_USERS":
                                 List<String> users = userRepo.getAllUsers();
