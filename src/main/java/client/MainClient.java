@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 public class MainClient {
 
     private static int loggedUserId = -1;
-    // Ustaw port zgodny z serwerem
     private static final int PORT = 5000;
     private static final String HOST = "127.0.0.1";
 
@@ -67,12 +66,21 @@ public class MainClient {
                 String user = userField.getText();
                 String pass = new String(passField.getPassword());
                 String reply = sendCommand("LOGIN;" + user + ";" + pass);
+
                 if (reply != null && reply.startsWith("LOGIN_OK;")) {
                     String[] parts = reply.split(";", 2);
                     loggedUserId = Integer.parseInt(parts[1]);
                     frame.setVisible(false);
-                    JFrame dashboard = buildDashboardFrame(frame);
-                    dashboard.setVisible(true);
+
+                    // --- LOGIKA ADMINA ---
+                    if ("admin".equals(user)) {
+                        JFrame adminFrame = buildAdminFrame(frame);
+                        adminFrame.setVisible(true);
+                    } else {
+                        JFrame dashboard = buildDashboardFrame(frame);
+                        dashboard.setVisible(true);
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(frame, "Błąd logowania");
                 }
@@ -102,28 +110,103 @@ public class MainClient {
         });
 
         moviesBtn.addActionListener(e -> {
-            JFrame moviesFrame = new JFrame("Lista Filmów");
-            moviesFrame.setSize(500, 300);
-            moviesFrame.setLocationRelativeTo(frame);
-            JTextArea textArea = new JTextArea();
-            textArea.setEditable(false);
-            moviesFrame.add(new JScrollPane(textArea));
-            moviesFrame.setVisible(true);
-
-            List<String> lines = sendCommandLines("GET_FILMS");
-            if (lines == null) {
-                textArea.setText("Błąd połączenia z serwerem");
-            } else {
-                for (String l : lines) textArea.append(l + "\n");
-            }
+            showMoviesWindow(frame);
         });
 
         return frame;
     }
 
+    // --- PANEL ADMINA ---
+    private static JFrame buildAdminFrame(JFrame mainFrame) {
+        JFrame frame = new JFrame("PANEL ADMINISTRATORA");
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(mainFrame);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JLabel header = new JLabel("Zarządzanie użytkownikami", SwingConstants.CENTER);
+        header.setFont(new Font("Arial", Font.BOLD, 18));
+        header.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        panel.add(header, BorderLayout.NORTH);
+
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        JList<String> userList = new JList<>(listModel);
+        panel.add(new JScrollPane(userList), BorderLayout.CENTER);
+
+        JPanel btnPanel = new JPanel();
+        JButton refreshBtn = new JButton("Odśwież");
+        JButton deleteBtn = new JButton("Usuń użytkownika");
+        JButton passBtn = new JButton("Zmień hasło");
+        JButton logoutBtn = new JButton("Wyloguj");
+        btnPanel.add(refreshBtn);
+        btnPanel.add(deleteBtn);
+        btnPanel.add(passBtn);
+        btnPanel.add(logoutBtn);
+        panel.add(btnPanel, BorderLayout.SOUTH);
+
+        // Funkcja odświeżania listy
+        Runnable refreshAction = () -> {
+            listModel.clear();
+            List<String> lines = sendCommandLines("ADMIN_GET_USERS");
+            if (lines != null) {
+                for (String l : lines) listModel.addElement(l);
+            }
+        };
+
+        refreshBtn.addActionListener(e -> refreshAction.run());
+
+        // Pobierz listę na starcie
+        refreshAction.run();
+
+        deleteBtn.addActionListener(e -> {
+            String selected = userList.getSelectedValue();
+            if (selected == null) { JOptionPane.showMessageDialog(frame, "Wybierz użytkownika"); return; }
+
+            // Parsowanie ID: "ID: 5 | Login: ..."
+            String idStr = selected.split("\\|")[0].replace("ID:", "").trim();
+
+            int confirm = JOptionPane.showConfirmDialog(frame, "Czy na pewno usunąć użytkownika ID " + idStr + "?\nZostaną usunięte też jego transakcje!", "Potwierdź", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                String reply = sendCommand("ADMIN_DEL_USER;" + idStr);
+                JOptionPane.showMessageDialog(frame, reply);
+                refreshAction.run();
+            }
+        });
+
+        passBtn.addActionListener(e -> {
+            String selected = userList.getSelectedValue();
+            if (selected == null) { JOptionPane.showMessageDialog(frame, "Wybierz użytkownika"); return; }
+            String idStr = selected.split("\\|")[0].replace("ID:", "").trim();
+
+            String newPass = JOptionPane.showInputDialog(frame, "Podaj nowe hasło:");
+            if (newPass != null && !newPass.isBlank()) {
+                String reply = sendCommand("ADMIN_PASS;" + idStr + ";" + newPass);
+                JOptionPane.showMessageDialog(frame, reply);
+            }
+        });
+
+        logoutBtn.addActionListener(e -> {
+            loggedUserId = -1;
+            frame.dispose();
+            mainFrame.setVisible(true);
+        });
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                mainFrame.setVisible(true);
+            }
+        });
+
+        frame.add(panel);
+        return frame;
+    }
+
+    // --- PANEL ZWYKŁEGO UŻYTKOWNIKA ---
     private static JFrame buildDashboardFrame(JFrame mainFrame) {
         JFrame frame = new JFrame("Panel użytkownika - ID: " + loggedUserId);
-        frame.setSize(520, 420); // Trochę większe okno, bo więcej przycisków
+        frame.setSize(520, 420);
         frame.setLocationRelativeTo(mainFrame);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -139,16 +222,10 @@ public class MainClient {
         JButton moviesBtn = new JButton("Lista Filmów");
         JButton rentBtn = new JButton("Wypożycz film");
         JButton myRentsBtn = new JButton("Moje wypożyczenia");
-
-        // PRZYWRÓCONE: Przycisk do podglądu historii
         JButton myTransBtn = new JButton("Moje transakcje / opłaty");
-
-        // NOWE: Przycisk akcji (płatność + zwrot)
         JButton payAndReturnBtn = new JButton("Zapłać i zwróć film");
-
         JButton logoutBtn = new JButton("Wyloguj");
 
-        // Dodajemy wszystkie przyciski do panelu
         for (JComponent c : new JComponent[]{moviesBtn, rentBtn, myRentsBtn, myTransBtn, payAndReturnBtn, logoutBtn}) {
             c.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(c);
@@ -157,19 +234,7 @@ public class MainClient {
 
         frame.add(panel);
 
-        moviesBtn.addActionListener(e -> {
-            JFrame moviesFrame = new JFrame("Lista Filmów");
-            moviesFrame.setSize(500, 300);
-            moviesFrame.setLocationRelativeTo(frame);
-            JTextArea textArea = new JTextArea();
-            textArea.setEditable(false);
-            moviesFrame.add(new JScrollPane(textArea));
-            moviesFrame.setVisible(true);
-
-            List<String> lines = sendCommandLines("GET_FILMS");
-            if (lines == null) textArea.setText("Błąd połączenia z serwerem");
-            else for (String l : lines) textArea.append(l + "\n");
-        });
+        moviesBtn.addActionListener(e -> showMoviesWindow(frame));
 
         rentBtn.addActionListener(e -> {
             if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
@@ -180,7 +245,6 @@ public class MainClient {
             List<String> available = new ArrayList<>();
             Pattern idPattern = Pattern.compile("^(\\d+)\\.");
             for (String l : lines) {
-                // Szukamy filmów, które są dostępne
                 if (l.contains("Dostępny: true") || l.contains("Dostepny: true")) {
                     Matcher m = idPattern.matcher(l);
                     if (m.find()) {
@@ -233,7 +297,6 @@ public class MainClient {
             }
         });
 
-        // PRZYWRÓCONA OBSŁUGA PRZYCISKU "MOJE TRANSAKCJE"
         myTransBtn.addActionListener(e -> {
             if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
             JFrame f = new JFrame("Moje transakcje / opłaty");
@@ -253,7 +316,6 @@ public class MainClient {
             }
         });
 
-        // GŁÓWNY PRZYCISK DO ZWROTU I PŁATNOŚCI
         payAndReturnBtn.addActionListener(e -> {
             if (loggedUserId < 0) { JOptionPane.showMessageDialog(frame, "Zaloguj się najpierw"); return; }
 
@@ -261,14 +323,12 @@ public class MainClient {
             if (lines == null) { JOptionPane.showMessageDialog(frame, "Błąd połączenia z serwerem"); return; }
 
             List<String> unpaid = new ArrayList<>();
-            // Regex obsługujący kropki i "zł"
             Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
 
             for (String l : lines) {
                 Matcher m = p.matcher(l);
                 if (m.find()) {
                     String status = m.group(4);
-                    // Pokazujemy tylko te NIEOPŁACONE
                     if ("NIE".equalsIgnoreCase(status)) {
                         String item = "Opłata ID: " + m.group(1) + " | Kwota: " + m.group(2) + " zł | Za: " + m.group(3);
                         unpaid.add(item);
@@ -298,9 +358,7 @@ public class MainClient {
                 return;
             }
 
-            // Kwota nie jest ważna w żądaniu, serwer sam ją wyliczy na podstawie czasu
             double kwota = 0.0;
-
             String reply = sendCommand("PAY;" + oplataId + ";" + kwota + ";" + loggedUserId);
             JOptionPane.showMessageDialog(frame, "Serwer: " + reply);
         });
@@ -319,6 +377,20 @@ public class MainClient {
         });
 
         return frame;
+    }
+
+    private static void showMoviesWindow(JFrame parent) {
+        JFrame moviesFrame = new JFrame("Lista Filmów");
+        moviesFrame.setSize(500, 300);
+        moviesFrame.setLocationRelativeTo(parent);
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+        moviesFrame.add(new JScrollPane(textArea));
+        moviesFrame.setVisible(true);
+
+        List<String> lines = sendCommandLines("GET_FILMS");
+        if (lines == null) textArea.setText("Błąd połączenia z serwerem");
+        else for (String l : lines) textArea.append(l + "\n");
     }
 
     private static String sendCommand(String cmd) {

@@ -48,3 +48,97 @@
 2025-12-18 21:02:02 [main] INFO  server.UserRepository - Pomyślne logowanie użytkownika: testuser (ID: 1)
 2025-12-18 21:02:02 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: testuser (ID: 1)
 2025-12-18 21:02:02 [main] WARN  server.UserRepository - Nieudana próba logowania dla użytkownika: testuser
+2025-12-18 21:02:37 [main] INFO  server.ServerApp - ========================================
+2025-12-18 21:02:37 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-18 21:02:37 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-18 21:02:37 [main] INFO  server.ServerApp - ========================================
+2025-12-18 21:02:40 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:02:40 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: LOGIN;u;u
+2025-12-18 21:02:41 [Thread-0] INFO  server.UserRepository - Pomyślne logowanie użytkownika: u (ID: 1)
+2025-12-18 21:02:42 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:02:42 [Thread-1] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 21:02:42 [Thread-1] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 21:02:43 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:02:43 [Thread-2] INFO  server.ServerApp - [Klient] Komenda: RENT;5;1
+2025-12-18 21:02:43 [Thread-2] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 5
+2025-12-18 21:09:11 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:09:11 [Thread-3] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 21:09:13 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:09:13 [Thread-4] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 21:09:15 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:09:15 [Thread-5] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 21:09:17 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:09:17 [Thread-6] INFO  server.ServerApp - [Klient] Komenda: MY_RENTS;1
+2025-12-18 21:13:46 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:13:46 [Thread-7] INFO  server.ServerApp - [Klient] Komenda: LOGIN;user;user
+2025-12-18 21:13:46 [Thread-7] WARN  server.UserRepository - Nieudana próba logowania dla użytkownika: user
+2025-12-18 21:13:49 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:13:49 [Thread-8] INFO  server.ServerApp - [Klient] Komenda: LOGIN;u;u
+2025-12-18 21:13:49 [Thread-8] INFO  server.UserRepository - Pomyślne logowanie użytkownika: u (ID: 1)
+2025-12-18 21:13:50 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:13:50 [Thread-9] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 21:13:50 [Thread-9] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 21:14:11 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:14:11 [Thread-10] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 21:14:14 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:14:14 [Thread-11] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 21:14:14 [Thread-11] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 21:14:15 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:14:15 [Thread-12] INFO  server.ServerApp - [Klient] Komenda: RENT;1;1
+2025-12-18 21:14:15 [Thread-12] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 21:14:16 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-18 21:14:16 [Thread-13] INFO  server.ServerApp - [Klient] Komenda: MY_TRANS;1
+2025-12-18 21:16:05 [main] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 21:16:05 [pool-3-thread-1] INFO  server.ServerApp - [Klient] Komenda: REGISTER;test;test
+2025-12-18 21:16:05 [pool-3-thread-1] INFO  server.UserRepository - Utworzono nowego użytkownika: test (ID: 1)
+2025-12-18 21:16:05 [pool-3-thread-1] INFO  server.ServerApp - [Klient] Komenda: LOGIN;test;test
+2025-12-18 21:16:05 [pool-3-thread-1] INFO  server.UserRepository - Pomyślne logowanie użytkownika: test (ID: 1)
+2025-12-18 21:16:05 [pool-3-thread-1] INFO  server.ServerApp - [Klient] Komenda: GET_FILMS
+2025-12-18 21:16:05 [pool-3-thread-1] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: klient1 (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Pomyślne logowanie użytkownika: klient1 (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: klient1 (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Pomyślne logowanie użytkownika: klient1 (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: klient1 (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Pomyślne logowanie użytkownika: klient1 (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.TransactionRepository - Użytkownik 1 wypożyczył film 1
+2025-12-18 21:16:05 [main] INFO  server.TransactionRepository - Auto-zwrot filmu ID: 1 przy płatności.
+2025-12-18 21:16:05 [main] INFO  server.FilmRepository - Pobrano filmy z bazy.
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: testuser (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Nieudana rejestracja: użytkownik testuser już istnieje.
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: testuser (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: nowy (ID: 2)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: testuser (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Pomyślne logowanie użytkownika: testuser (ID: 1)
+2025-12-18 21:16:05 [main] INFO  server.UserRepository - Utworzono nowego użytkownika: testuser (ID: 1)
+2025-12-18 21:16:05 [main] WARN  server.UserRepository - Nieudana próba logowania dla użytkownika: testuser
+2025-12-23 16:22:33 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:22:33 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (Log4j + Logic)
+2025-12-23 16:22:33 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-23 16:22:33 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:22:38 [main] INFO  server.ServerApp - Nowe połączenie od: /127.0.0.1
+2025-12-23 16:22:38 [Thread-0] INFO  server.ServerApp - [Klient] Komenda: REGISTER;admin;admin
+2025-12-23 16:22:39 [Thread-0] INFO  server.UserRepository - Utworzono nowego użytkownika: admin (ID: 2)
+2025-12-23 16:23:22 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:23:22 [main] INFO  server.ServerApp -  Serwer Wypożyczalni DVD (ADMIN ENABLED)
+2025-12-23 16:23:22 [main] INFO  server.ServerApp -  Port: 5000
+2025-12-23 16:23:22 [main] INFO  server.ServerApp - ========================================
+2025-12-23 16:23:29 [Thread-0] INFO  server.ServerApp - [Komenda] LOGIN;admin;admin
+2025-12-23 16:23:30 [Thread-1] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
+2025-12-23 16:23:32 [Thread-2] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
+2025-12-23 16:23:37 [Thread-3] INFO  server.ServerApp - [Komenda] LOGIN;u;u
+2025-12-23 16:23:42 [Thread-4] INFO  server.ServerApp - [Komenda] REGISTER;aha;aha
+2025-12-23 16:23:46 [Thread-5] INFO  server.ServerApp - [Komenda] LOGIN;admin;admin
+2025-12-23 16:23:46 [Thread-6] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
+2025-12-23 16:23:53 [Thread-7] INFO  server.ServerApp - [Komenda] ADMIN_PASS;3;123
+2025-12-23 16:23:53 [Thread-7] INFO  server.UserRepository - Zmieniono hasło dla ID: 3
+2025-12-23 16:23:58 [Thread-8] INFO  server.ServerApp - [Komenda] LOGIN;aha;123
+2025-12-23 16:24:03 [Thread-9] INFO  server.ServerApp - [Komenda] LOGIN;admin;admin
+2025-12-23 16:24:03 [Thread-10] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
+2025-12-23 16:24:06 [Thread-11] INFO  server.ServerApp - [Komenda] ADMIN_DEL_USER;3
+2025-12-23 16:24:06 [Thread-11] INFO  server.UserRepository - Usunięto użytkownika ID: 3
+2025-12-23 16:24:06 [Thread-12] INFO  server.ServerApp - [Komenda] ADMIN_GET_USERS
+2025-12-23 16:24:09 [Thread-13] INFO  server.ServerApp - [Komenda] LOGIN;aha;aha
+2025-12-23 16:24:13 [Thread-14] INFO  server.ServerApp - [Komenda] LOGIN;aha;123

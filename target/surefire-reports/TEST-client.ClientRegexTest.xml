@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="client.ClientRegexTest" time="0.057" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="client.ClientRegexTest" time="0.055" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="24"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="PL"/>
     <property name="sun.boot.library.path" value="C:\Java\jdk-24.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\Ajgorek\AppData\Local\Temp\surefire10571682003954131464\surefirebooter-20251218210201387_3.jar C:\Users\Ajgorek\AppData\Local\Temp\surefire10571682003954131464 2025-12-18T21-02-01_263-jvmRun1 surefire-20251218210201387_1tmp surefire_0-20251218210201387_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Ajgorek\AppData\Local\Temp\surefire4644141976628094308\surefirebooter-20251218211603792_3.jar C:\Users\Ajgorek\AppData\Local\Temp\surefire4644141976628094308 2025-12-18T21-16-03_665-jvmRun1 surefire-20251218211603792_1tmp surefire_0-20251218211603792_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Wypozyczalnia_DVD\target\test-classes;C:\Wypozyczalnia_DVD\target\classes;C:\Users\Ajgorek\.m2\repository\org\apache\logging\log4j\log4j-api\2.20.0\log4j-api-2.20.0.jar;C:\Users\Ajgorek\.m2\repository\org\apache\logging\log4j\log4j-core\2.20.0\log4j-core-2.20.0.jar;C:\Users\Ajgorek\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar;C:\Users\Ajgorek\.m2\repository\com\google\protobuf\protobuf-java\3.21.9\protobuf-java-3.21.9.jar;C:\Users\Ajgorek\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\Ajgorek\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajgorek\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\Ajgorek\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Ajgorek\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.2\junit-jupiter-engine-5.9.2.jar;C:\Users\Ajgorek\.m2\repository\org\junit\platform\junit-platform-engine\1.9.2\junit-platform-engine-1.9.2.jar;C:\Users\Ajgorek\.m2\repository\com\h2database\h2\2.1.214\h2-2.1.214.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Ajgorek\AppData\Local\Temp\surefire10571682003954131464\surefirebooter-20251218210201387_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Ajgorek\AppData\Local\Temp\surefire4644141976628094308\surefirebooter-20251218211603792_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="24.0.2+12-54"/>
@@ -58,6 +58,6 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="68.0"/>
   </properties>
-  <testcase name="shouldParseDynamicSumWithExtraText" classname="client.ClientRegexTest" time="0.037"/>
+  <testcase name="shouldParseDynamicSumWithExtraText" classname="client.ClientRegexTest" time="0.035"/>
   <testcase name="shouldParseServerFeeResponseWithDot" classname="client.ClientRegexTest" time="0.001"/>
 </testsuite>
