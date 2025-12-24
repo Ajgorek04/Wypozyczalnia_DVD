@@ -9,10 +9,8 @@ class ClientRegexTest {
 
     @Test
     void shouldParseServerFeeResponseWithDot() {
-        // Taki format wysyła Twój serwer (z Locale.US)
         String serverResponse = "Opłata 5 | kwota: 10.00 zł | powód: Start | Opłacona: NIE";
 
-        // Regex z Twojego MainClient
         Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");
         Matcher m = p.matcher(serverResponse);
 
@@ -25,7 +23,6 @@ class ClientRegexTest {
 
     @Test
     void shouldParseDynamicSumWithExtraText() {
-        // Test trudniejszego przypadku (np. gdy doliczono czas)
         String serverResponse = "Opłata 12 | kwota: 16.50 zł | powód: Suma bieżąca (Start + 4 min) | Opłacona: NIE";
 
         Pattern p = Pattern.compile("Opłata\\s+(\\d+)\\s+\\|.*kwota:\\s*([0-9]+\\.?[0-9]*).*?\\|\\s*powód:\\s*(.*?)\\s+\\|\\s*Opłacona:\\s*(NIE|TAK)");

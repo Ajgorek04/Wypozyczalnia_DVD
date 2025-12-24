@@ -66,8 +66,6 @@ public class MainClient {
         });
     }
 
-    // --- GUI: OKNO GŁÓWNE (LOGOWANIE) ---
-
     /**
      * Buduje główne okno aplikacji (Ekran startowy / Logowanie).
      * Zawiera przyciski do logowania, rejestracji i przeglądania filmów jako gość.
@@ -97,7 +95,6 @@ public class MainClient {
         contentPanel.add(title);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 
-        // Przyciski
         JButton loginBtn = createModernButton("Zaloguj się", new Color(41, 128, 185)); // Niebieski
         JButton registerBtn = createModernButton("Zarejestruj się", new Color(41, 128, 185));
         JButton moviesBtn = createModernButton("Przeglądaj Filmy (Gość)", new Color(142, 68, 173)); // Fioletowy
@@ -111,7 +108,6 @@ public class MainClient {
 
         bgPanel.add(contentPanel);
 
-        // --- AKCJE ---
 
         exitBtn.addActionListener(e -> System.exit(0));
 
@@ -171,7 +167,6 @@ public class MainClient {
         return frame;
     }
 
-    // --- GUI: PANEL UŻYTKOWNIKA ---
 
     /**
      * Buduje panel użytkownika (Dashboard).
@@ -225,8 +220,6 @@ public class MainClient {
         }
 
         bgPanel.add(contentPanel);
-
-        // --- LOGIKA ---
 
         moviesBtn.addActionListener(e -> showMoviesWindow(frame));
 
@@ -298,8 +291,6 @@ public class MainClient {
         return frame;
     }
 
-    // --- GUI: PANEL ADMINISTRATORA (POPRAWIONY UKŁAD) ---
-
     /**
      * Buduje panel administratora.
      * Uruchamiany tylko, gdy login to "admin". Umożliwia zarządzanie użytkownikami.
@@ -309,7 +300,6 @@ public class MainClient {
      */
     private static JFrame buildAdminFrame(JFrame mainFrame) {
         JFrame frame = new JFrame("Panel Administratora");
-        // FIX: Zwiększona wysokość, żeby przyciski się nie ucinały
         frame.setSize(700, 600);
         frame.setLocationRelativeTo(mainFrame);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -337,7 +327,6 @@ public class MainClient {
         listWrapper.add(new JScrollPane(userList), BorderLayout.CENTER);
         bgPanel.add(listWrapper, BorderLayout.CENTER);
 
-        // FIX: Grid Layout 2x2 dla przycisków, żeby się nie ucinały
         JPanel btnPanel = new JPanel(new GridLayout(2, 2, 15, 15));
         btnPanel.setOpaque(false);
         btnPanel.setBorder(new EmptyBorder(20, 40, 30, 40));
@@ -396,8 +385,6 @@ public class MainClient {
         return frame;
     }
 
-    // --- CUSTOM SWING COMPONENTS ---
-
     /**
      * Niestandardowy panel z ciemnym gradientem w tle.
      * Służy jako kontener (ContentPane) dla wszystkich okien aplikacji.
@@ -432,7 +419,6 @@ public class MainClient {
             setFont(MAIN_FONT);
             setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            // Preferowany rozmiar (szerokość przycisków)
             Dimension size = new Dimension(260, 45);
             setPreferredSize(size);
             setMaximumSize(size);
@@ -501,8 +487,6 @@ public class MainClient {
         if (lines == null) textArea.setText("Błąd połączenia z serwerem");
         else for (String l : lines) textArea.append(l + "\n");
     }
-
-    // --- KOMUNIKACJA ---
 
     /**
      * Wysyła komendę do serwera i zwraca pojedynczą linię odpowiedzi.

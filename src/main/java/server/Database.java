@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * dynamiczną zmianę konfiguracji, co jest wykorzystywane w środowisku testowym.
  * </p>
  *
- * @author Igor Błędzińkis, Łukasz Gierczak
+ * @author Igor Błędziński, Łukasz Gierczak
  * @version 1.0
  */
 public class Database {

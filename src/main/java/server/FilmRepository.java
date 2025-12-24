@@ -14,7 +14,7 @@ import java.util.List;
  * ich w formie sformatowanej listy tekstowej dla warstwy prezentacji (Klienta).
  * </p>
  *
- * @author Twój Zespół
+ * @author Igor Błędziński, Łukasz Gierczak
  * @version 1.0
  */
 public class FilmRepository {
@@ -42,7 +42,6 @@ public class FilmRepository {
      */
     public List<String> getAllFilmsFormatted() {
         List<String> result = new ArrayList<>();
-        // Upewnij się, że nazwy kolumn pasują do Twojej bazy (np. gatunek)
         String sql = "SELECT id, tytul, rok, gatunek, dostepny FROM Film";
 
         try (Connection conn = Database.connect();
@@ -55,10 +54,8 @@ public class FilmRepository {
                 int rok = rs.getInt("rok");
                 boolean dostepny = rs.getBoolean("dostepny");
 
-                // --- ZMIANA TUTAJ: Tłumaczenie boolean na polski ---
                 String dostepnoscTekst = dostepny ? "Tak" : "Nie";
 
-                // Format: "1. Matrix (1999) - Dostępny: Tak"
                 String line = String.format("%d. %s (%d) - Dostępny: %s", id, tytul, rok, dostepnoscTekst);
                 result.add(line);
             }

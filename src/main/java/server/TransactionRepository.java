@@ -17,8 +17,8 @@ import java.util.Locale;
  * poprzez naliczanie opłat w czasie rzeczywistym, aż po finalizację transakcji (płatność i zwrot).
  * </p>
  *
- * @author Twój Zespół
- * @version 2.0
+ * @author Igor Błędziński, Łukasz Gierczak
+ * @version 1.0
  */
 public class TransactionRepository {
     private static final Logger logger = LogManager.getLogger(TransactionRepository.class);
@@ -126,7 +126,6 @@ public class TransactionRepository {
                 ps.setInt(2, filmId);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next() && rs.getInt(1) > 0) {
-                    // Jest nieopłacona transakcja
                     return "RETURN_FAIL;UNPAID - Aby zwrócić film, wejdź w 'Zapłać opłatę'. System automatycznie policzy czas i zwróci film po zapłacie.";
                 }
             }

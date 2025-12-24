@@ -20,8 +20,8 @@ import java.util.List;
  * bezpieczne usuwanie użytkowników wraz z całą ich historią (transakcje, opłaty).</li>
  * </ul>
  *
- * @author Twój Zespół
- * @version 2.0
+ * @author Igor Błędziński, Łukasz Gierczak
+ * @version 1.0
  */
 public class UserRepository {
 
@@ -56,7 +56,6 @@ public class UserRepository {
         Connection conn = Database.connect();
         if (conn == null) return false;
         try {
-            // Sprawdzenie duplikatów
             try (PreparedStatement check = conn.prepareStatement("SELECT COUNT(*) FROM Uzytkownik WHERE username = ?")) {
                 check.setString(1, username);
                 try (ResultSet rs = check.executeQuery()) {
@@ -64,14 +63,12 @@ public class UserRepository {
                 }
             }
 
-            // Dodanie użytkownika
             String sql = "INSERT INTO Uzytkownik(username, password_hash) VALUES (?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, username);
                 ps.setString(2, hash(password));
                 ps.executeUpdate();
 
-                // Dodanie profilu klienta
                 try (ResultSet keys = ps.getGeneratedKeys()) {
                     if (keys.next()) {
                         int userId = keys.getInt(1);
@@ -170,38 +167,32 @@ public class UserRepository {
         try {
             conn.setAutoCommit(false);
 
-            // 1. Usuń Opłaty
             String delOplaty = "DELETE o FROM Oplata o JOIN Transakcja t ON o.transakcja_id = t.id WHERE t.klient_id = ?";
             try (PreparedStatement ps = conn.prepareStatement(delOplaty)) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 2. Usuń Rachunki
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Rachunek WHERE klient_id = ?")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 3. Odblokuj filmy (żeby nie zostały "zjedzone" przez system)
             try (PreparedStatement ps = conn.prepareStatement("UPDATE Film SET dostepny=1 WHERE id IN (SELECT film_id FROM Transakcja WHERE klient_id=? AND dataZwrotu IS NULL)")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 4. Usuń Transakcje
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Transakcja WHERE klient_id = ?")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 5. Usuń z Klient
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Klient WHERE id = ?")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // 6. Usuń z Uzytkownik
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Uzytkownik WHERE id = ?")) {
                 ps.setInt(1, userId);
                 int rows = ps.executeUpdate();

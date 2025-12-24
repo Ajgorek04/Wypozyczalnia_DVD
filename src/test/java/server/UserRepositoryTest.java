@@ -10,10 +10,9 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        TestDatabaseSetup.initDatabase(); // Reset bazy i wgranie init.sql
+        TestDatabaseSetup.initDatabase();
         userRepo = new UserRepository();
 
-        // Dodajmy testowego usera (oprócz tych w bazie jeśli są)
         userRepo.registerUser("testuser", "testpass");
     }
 

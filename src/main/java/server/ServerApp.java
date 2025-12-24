@@ -14,8 +14,8 @@ import java.util.List;
  * i dla każdego nowego połączenia klienta tworzy osobny wątek obsługi (instancję {@link ClientHandler}).
  * </p>
  *
- * @author Twój Zespół
- * @version 2.0
+ * @author Igor Błędziński, Łukasz Gierczak
+ * @version 1.0
  */
 public class ServerApp {
 
@@ -43,7 +43,6 @@ public class ServerApp {
      * @param args Argumenty wiersza poleceń (nieużywane).
      */
     public static void main(String[] args) {
-        // ... (reszta kodu bez zmian, tylko konstruktor dodany powyżej)
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             logger.info("========================================");
             logger.info(" Serwer Wypożyczalni DVD (ADMIN ENABLED)");
@@ -63,7 +62,6 @@ public class ServerApp {
         }
     }
 
-    // ... (Klasa ClientHandler pozostaje bez zmian)
     /**
      * Klasa wewnętrzna odpowiedzialna za obsługę pojedynczego klienta w osobnym wątku.
      */

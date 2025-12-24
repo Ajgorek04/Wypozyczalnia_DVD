@@ -20,8 +20,6 @@ class FilmRepositoryTest {
         List<String> films = filmRepo.getAllFilmsFormatted();
         assertFalse(films.isEmpty(), "Baza nie powinna być pusta (dane z init.sql)");
 
-        // Sprawdź format (Locale.US kropki, itp.)
-        // Oczekujemy np: "1. Matrix (1999) - Dostępny: true"
         String firstFilm = films.get(0);
         assertTrue(firstFilm.contains("Matrix"), "Powinien być Matrix");
         assertTrue(firstFilm.contains("Dostępny:"), "Musi zawierać status dostępności");
